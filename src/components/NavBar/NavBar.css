@@ -1,0 +1,115 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg-navbar-color);
+    color: #fff;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.menu li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu li,
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    gap: 8px;
+}
+
+.menu li a:hover {
+    text-decoration: underline;
+}
+
+.hamburguer {
+    display: none;
+}
+
+@media (max-width: 400px) {
+    .menu {
+        display: none;
+        position: absolute;
+        top: 64px;
+        /* ajuste conforme navbar height */
+        right: 12px;
+        background: var(--bg-navbar-color);
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        flex-direction: column;
+        gap: 8px;
+        width: 200px;
+        transform-origin: top right;
+        transform: scale(0.95);
+        opacity: 0;
+        transition: opacity .18s ease, transform .18s ease;
+        z-index: 100;
+    }
+
+    .menu.open {
+        display: flex;
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .hamburguer {
+        display: block;
+    }
+
+    @media (max-width: 400px) {
+        .menu {
+            display: none; /* hidden by default on mobile */
+            flex-direction: column;
+            position: absolute;
+            top: 64px;
+            right: 12px;
+            background: var(--bg-navbar-color);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            gap: 8px;
+            width: 200px;
+            transform-origin: top right;
+            transform: scale(0.98);
+            opacity: 0;
+            transition: opacity .18s ease, transform .18s ease;
+            z-index: 100;
+        }
+
+        .menu.open {
+            display: flex;
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .hamburguer {
+            display: block;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .itemsNavBar { display: block; }
+    }
+}

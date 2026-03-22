@@ -1,0 +1,8 @@
+.primary {
+    background-color: var(--primary-button-color);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
