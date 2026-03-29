@@ -25,7 +25,7 @@ const Navbar = ({
     { label: "Home", url: "/home", type: "text" },
     { label: "Reportar", url: "/reportar", type: "text" },
     { label: "Login", url: "/login", type: "button" },
-    { label: "Cadastro", action: () => console.log('Cadastro clicked'), type: "button" }
+    { label: "Cadastro", action: () => window.location.href = "/cadastro", type: "button" }
   ],
 }: NavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);

@@ -2,7 +2,10 @@
     background-color: var(--primary-button-color);
     color: #fff;
     border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
+    border-radius: 5px;
+    padding: 8px 10px;
     cursor: pointer;
+}
+.full-width{
+    width: 100%;
 }
