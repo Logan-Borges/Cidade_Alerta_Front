@@ -24,7 +24,7 @@ const Navbar = ({
   menu = [
     { label: "Home", url: "/home", type: "text" },
     { label: "Reportar", url: "/reportar", type: "text" },
-    { label: "Login", url: "/login", type: "button" },
+    { label: "Login", action: () => window.location.href = "/login", type: "button" },
     { label: "Cadastro", action: () => window.location.href = "/cadastro", type: "button" }
   ],
 }: NavbarProps) => {

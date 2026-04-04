@@ -1,11 +1,27 @@
 .primary {
-    background-color: var(--primary-button-color);
+    background: linear-gradient(90deg, #ef671f 60%, #ff9800 100%);
     color: #fff;
     border: none;
-    border-radius: 5px;
-    padding: 8px 10px;
+    border-radius: 9px;
+    padding: 13px 32px; /* 🔥 aqui muda */
+    font-size: 1.15rem;
     cursor: pointer;
+    width: auto; /* 🔥 aqui muda */
+    box-shadow: 0 2px 8px 0 rgba(239, 103, 31, 0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
 }
-.full-width{
+
+.primary:hover {
+    background: linear-gradient(90deg, #ff9800 0%, #ef671f 100%);
+    box-shadow: 0 4px 16px 0 rgba(239, 103, 31, 0.13);
+}
+
+.full-width {
     width: 100%;
+
+
 }

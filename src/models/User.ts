@@ -13,3 +13,8 @@ export class User {
         this.id = id
     }
 }
+
+export interface LoginResponse {
+    mensagem: string
+    usuario: User
+}

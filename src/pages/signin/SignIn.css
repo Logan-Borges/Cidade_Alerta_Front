@@ -9,27 +9,27 @@
     overflow-x: hidden;
 }
 
-.container-singup {
+.container-signin {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: 480px;
+    height: 340px; /* reduzido */
     width: 420px;
     background: #fff;
-    border-radius: 22px;
-    padding: 36px 32px 28px 32px;
+    border-radius: 20px;
+    padding: 36px 28px 40px 32px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
     transition: box-shadow 0.3s;
 }
 
-.container-singup:hover {
+.container-signin:hover {
     box-shadow:
         0 12px 40px 0 rgba(31, 38, 135, 0.22),
         0 2px 8px rgba(15, 23, 42, 0.13);
 }
 
-.title-singup {
+.title-signin {
     color: var(--bg-navbar-color);
     display: flex;
     justify-content: center;
@@ -53,7 +53,7 @@ h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 18px;
+    gap: 22px;
     margin-bottom: 0;
 }
 
@@ -78,30 +78,33 @@ h2 {
     font-size: 1rem;
 }
 
-.input-forms .primary {
+.button {
     margin-top: 32px;
-    align-self: center;
-    display: block;      /* 🔥 ESSENCIAL */
-    margin-left: auto;   /* 🔥 */
-    margin-right: auto;  /* 🔥 */
+    width: 100%;
+    padding: 13px 0;
+    font-size: 1.15rem;
+    border-radius: 9px;
+    background: linear-gradient(90deg, #ef671f 60%, #ff9800 100%);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px 0 rgba(239, 103, 31, 0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.button:hover {
+    background: linear-gradient(90deg, #ff9800 0%, #ef671f 100%);
+    box-shadow: 0 4px 16px 0 rgba(239, 103, 31, 0.13);
 }
 
 @media (max-width: 500px) {
-    .container-singup {
+    .container-signin {
         width: 95vw;
-        min-width: 300px;
+        min-width: unset;
+        padding: 18px 6vw;
     }
+}
 
-    h2 {
-        font-size: 1.8rem;
-    }
-
-    .input-forms {
-        gap: 15px;
-    }
-
-    .input-forms input {
-        padding: 10px 14px;
-        font-size: 1rem;
-    }
+.input-forms .primary {
+    margin-top: 32px;
 }

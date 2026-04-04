@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import SingUp from "./pages/singup/SingUp";
+import SignIn from "./pages/signin/SignIn";
 //css
 import "./App.css";
 
@@ -17,6 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<div>Home</div>} />
             <Route path="/cadastro" element={<SingUp />} />
+            <Route path="/login" element={<SignIn />} />
           </Routes>
         </main>
 

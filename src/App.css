@@ -3,6 +3,12 @@ html, body, #root {
   margin: 0;
 }
 
+html, body {
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
 :root {
     --bg-navbar-color: #1e3652;
     --primary-button-color: #ef671f;
