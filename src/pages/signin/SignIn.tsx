@@ -1,18 +1,39 @@
 import { useState } from "react"
 import Button from "../../components/Button/Button"
+import { UserService, LoginDTO } from "../../services/UserService"
+import { useNavigate } from "react-router-dom"
 import "./SignIn.css"
+
+const userService = new UserService()
 
 const SignIn = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [erro, setErro] = useState("")
+     const navigate = useNavigate() 
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
+         console.log("handleLogin chamado!") // 👈 adiciona essa linha
+         console.log("email:", email, "password:", password) // 👈 e essa
+
         if (!email || !password) {
             alert("Preencha todos os campos")
             return
         }
-        // Aqui você pode adicionar a lógica de autenticação
-        alert("Login realizado com sucesso!")
+
+        const dados: LoginDTO = {
+            email,
+            senha: password
+        }
+
+        try {
+            const usuario = await userService.login(dados)
+            console.log("Logado!", usuario) 
+            alert("Login realizado com sucesso!")
+            navigate('/') 
+        } catch (error: any) {
+            setErro("Email ou senha inválidos")
+        }
     }
 
     return (
@@ -36,6 +57,7 @@ const SignIn = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    {erro && <p className="erro">{erro}</p>}
                     <Button
                         text="Entrar"
                         fullWidth
