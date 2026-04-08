@@ -39,10 +39,9 @@ const SignIn = () => {
             console.log("Logado!", usuario)
             setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
 
-            // Opcional: Você pode colocar um pequeno atraso aqui antes do navigate
-            // para dar tempo do usuário ver a mensagem de sucesso verde
-            setTimeout(() => navigate('/'), 1000)
+            setTimeout(() => navigate('/'), 2000)
 
+            navigate('/')
         } catch (error: any) {
             setAlert({ type: 'error', title: 'Email ou senha inválidos', description: 'Verifique suas credenciais e tente novamente.' })
         } finally {
