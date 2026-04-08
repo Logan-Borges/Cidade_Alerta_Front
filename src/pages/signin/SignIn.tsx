@@ -10,16 +10,20 @@ const SignIn = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [erro, setErro] = useState("")
-     const navigate = useNavigate() 
+    const [loading, setLoading] = useState(false) // estado loading
+    const navigate = useNavigate()
 
     const handleLogin = async () => {
-         console.log("handleLogin chamado!") // 👈 adiciona essa linha
-         console.log("email:", email, "password:", password) // 👈 e essa
+         console.log("handleLogin chamado!")
+         console.log("email:", email, "password:", password)
 
         if (!email || !password) {
             alert("Preencha todos os campos")
             return
         }
+
+        setLoading(true) // Ativa o loading
+        setErro("") // Limpa qualquer erro que estava na tela
 
         const dados: LoginDTO = {
             email,
@@ -28,11 +32,13 @@ const SignIn = () => {
 
         try {
             const usuario = await userService.login(dados)
-            console.log("Logado!", usuario) 
+            console.log("Logado!", usuario)
             alert("Login realizado com sucesso!")
-            navigate('/') 
+            navigate('/')
         } catch (error: any) {
             setErro("Email ou senha inválidos")
+        } finally {
+            setLoading(false) // Desativa o loading
         }
     }
 
@@ -62,6 +68,7 @@ const SignIn = () => {
                         text="Entrar"
                         fullWidth
                         task={handleLogin}
+                        isLoading={loading} // passa o estado para dentro do Button
                     />
                 </div>
             </div>

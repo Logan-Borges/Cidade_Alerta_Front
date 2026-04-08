@@ -4,15 +4,21 @@ interface ButtonProps {
   text: string;
   task: () => void;
   fullWidth?: boolean;
+  isLoading?: boolean;
 }
 
-const Button = ({ text, task, fullWidth }: ButtonProps) => {
+const Button = ({ text, task, fullWidth, isLoading }: ButtonProps) => {
   return (
     <button
-      onClick={() => task()}
-      className={`primary ${fullWidth ? "full-width" : ""}`}
+      onClick={() => !isLoading && task()} // Evita múltiplos cliques se estiver carregando
+      className={`primary ${fullWidth ? "full-width" : ""} ${isLoading ? "loading" : ""}`}
+      disabled={isLoading} // Desabilita o botão nativamente
     >
-      {text}
+      {isLoading ? (
+        <span className="spinner"></span> // Ícone carregando
+      ) : (
+        text
+      )}
     </button>
   );
 };
