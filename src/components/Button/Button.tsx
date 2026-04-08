@@ -1,4 +1,5 @@
 import "./Button.css";
+import Loading from "../Loading/Loading";
 
 interface ButtonProps {
   text: string;
@@ -10,15 +11,11 @@ interface ButtonProps {
 const Button = ({ text, task, fullWidth, isLoading }: ButtonProps) => {
   return (
     <button
-      onClick={() => !isLoading && task()} // Evita múltiplos cliques se estiver carregando
-      className={`primary ${fullWidth ? "full-width" : ""} ${isLoading ? "loading" : ""}`}
-      disabled={isLoading} // Desabilita o botão nativamente
+      onClick={() => !isLoading && task()}
+      className={`primary ${fullWidth ? "full-width" : ""}`}
+      disabled={isLoading}
     >
-      {isLoading ? (
-        <span className="spinner"></span> // Ícone carregando
-      ) : (
-        text
-      )}
+      {isLoading ? <Loading /> : text}
     </button>
   );
 };

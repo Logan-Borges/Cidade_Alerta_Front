@@ -12,7 +12,6 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-
 }
 
 .primary:hover {
@@ -21,28 +20,11 @@
 }
 
 .primary:disabled {
-    background: #ccc; /* Cor de desabilitado */
+    background: #ccc;
     cursor: not-allowed;
     box-shadow: none;
 }
 
-/* Ícone de carregando */
-.spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-    display: inline-block;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
 .full-width {
     width: 100%;
-
-
 }

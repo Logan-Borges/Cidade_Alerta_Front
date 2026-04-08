@@ -38,6 +38,9 @@ const SignIn = () => {
             const usuario = await userService.login(dados)
             console.log("Logado!", usuario)
             setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
+
+            setTimeout(() => navigate('/'), 2000)
+
             navigate('/')
         } catch (error: any) {
             setAlert({ type: 'error', title: 'Email ou senha inválidos', description: 'Verifique suas credenciais e tente novamente.' })
@@ -67,6 +70,7 @@ const SignIn = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+
                     <Button
                         text="Entrar"
                         fullWidth
