@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Button from "../../components/Button/Button"
+import Alert from "../../components/Alert/Alert"
 import { UserService, LoginDTO } from "../../services/UserService"
 import { useNavigate } from "react-router-dom"
 import "./SignIn.css"
@@ -9,15 +10,12 @@ const userService = new UserService()
 const SignIn = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [erro, setErro] = useState("")
-     const navigate = useNavigate() 
+    const [alert, setAlert] = useState<{ type: 'success' | 'error' | 'warning' | 'info'; title: string; description?: string } | null>(null)
+    const navigate = useNavigate()
 
     const handleLogin = async () => {
-         console.log("handleLogin chamado!") // 👈 adiciona essa linha
-         console.log("email:", email, "password:", password) // 👈 e essa
-
         if (!email || !password) {
-            alert("Preencha todos os campos")
+            setAlert({ type: 'warning', title: 'Preencha todos os campos', description: 'Email e senha são obrigatórios.' })
             return
         }
 
@@ -28,11 +26,11 @@ const SignIn = () => {
 
         try {
             const usuario = await userService.login(dados)
-            console.log("Logado!", usuario) 
-            alert("Login realizado com sucesso!")
-            navigate('/') 
+            console.log("Logado!", usuario)
+            setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
+            navigate('/')
         } catch (error: any) {
-            setErro("Email ou senha inválidos")
+            setAlert({ type: 'error', title: 'Email ou senha inválidos', description: 'Verifique suas credenciais e tente novamente.' })
         }
     }
 
@@ -43,6 +41,14 @@ const SignIn = () => {
                     <h2>Login</h2>
                 </div>
                 <div className="input-forms">
+                    {alert && (
+                        <Alert
+                            type={alert.type}
+                            title={alert.title}
+                            description={alert.description}
+                            onClose={() => setAlert(null)}
+                        />
+                    )}
                     <input
                         id="email"
                         type="email"
@@ -57,7 +63,6 @@ const SignIn = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {erro && <p className="erro">{erro}</p>}
                     <Button
                         text="Entrar"
                         fullWidth
