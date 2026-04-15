@@ -19,4 +19,19 @@ export class BaseService {
 
         return response.json() as Promise<TResponse>
     }
+    protected async get<TResponse>(path: string): Promise<TResponse> {
+        const response = await fetch(`${API_BASE_URL}${path}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Erro ${response.status}: ${errorText}`)
+        }
+
+        return response.json() as Promise<TResponse>
+    }
 }

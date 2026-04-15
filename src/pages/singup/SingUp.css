@@ -14,11 +14,12 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: 480px;
+    height: auto;
+    min-height: 480px;
     width: 420px;
     background: #fff;
     border-radius: 22px;
-    padding: 36px 32px 28px 32px;
+    padding: 30px 32px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
     transition: box-shadow 0.3s;
 }
@@ -66,6 +67,7 @@ h2 {
     background: #f8fafc;
     transition: border 0.2s, box-shadow 0.2s;
     outline: none;
+    box-sizing: border-box;
 }
 
 .input-forms input:focus {
@@ -78,12 +80,40 @@ h2 {
     font-size: 1rem;
 }
 
+.input-forms select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 1.07rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    color: #a0aec0;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    box-sizing: border-box;
+}
+
+.input-forms select:focus {
+    border: 1.5px solid var(--bg-navbar-color);
+    box-shadow: 0 0 0 2px #c3e6ff55;
+}
+
+.input-forms select option {
+    color: #1a202c;
+}
+
 .input-forms .primary {
-    margin-top: 32px;
+    margin-top: 8px;
+    width: 100%;
     align-self: center;
-    display: block;      /* 🔥 ESSENCIAL */
-    margin-left: auto;   /* 🔥 */
-    margin-right: auto;  /* 🔥 */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media (max-width: 500px) {
@@ -101,6 +131,11 @@ h2 {
     }
 
     .input-forms input {
+        padding: 10px 14px;
+        font-size: 1rem;
+    }
+
+    .input-forms select {
         padding: 10px 14px;
         font-size: 1rem;
     }

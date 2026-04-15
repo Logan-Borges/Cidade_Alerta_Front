@@ -1,11 +1,14 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Button from "../../components/Button/Button"
 import Alert from "../../components/Alert/Alert"
 import { User } from "../../models/User"
+import { Bairro } from "../../models/Bairro"
 import { UserService } from "../../services/UserService"
+import { BairroService } from "../../services/BairroService"
 import "./SingUp.css"
 
 const userService = new UserService()
+const bairroService = new BairroService()
 
 type AlertState = {
     type: 'success' | 'error' | 'warning' | 'info'
@@ -20,6 +23,20 @@ const SingUp = () => {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [alert, setAlert] = useState<AlertState>(null)
+    const [bairros, setBairros] = useState<Bairro[]>([])
+    const [bairroId, setBairroId] = useState<number>(0)
+
+    useEffect(() => {
+        const fetchBairros = async () => {
+            try {
+                const data = await bairroService.getBairros()
+                setBairros(data)
+            } catch (error) {
+                setAlert({ type: 'error', title: 'Erro ao carregar bairros', description: 'Tente recarregar a página.' })
+            }
+        }
+        fetchBairros()
+    }, [])
 
     const validateFields = (): boolean => {
         if (!name || !email || !cpf || !password || !confirmPassword) {
@@ -34,7 +51,8 @@ const SingUp = () => {
     }
 
     const saveData = async () => {
-        const user = new User(name, email, password)
+        const user = new User(name, email, password,cpf,undefined,bairroId)
+        console.log("Dados do usuário a serem enviados:", user)
         try {
             const response = await userService.createUser(user)
             console.log("Usuário criado:", response)
@@ -65,6 +83,18 @@ const SingUp = () => {
                     <input id="cpf" type="text" placeholder="Digite seu CPF" value={cpf} onChange={(e) => setCpf(e.target.value)} />
                     <input id="password" type="password" placeholder="Digite sua senha" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <input id="confirmPassword" type="password" placeholder="Confirme sua senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    <select
+                        id="bairro"
+                        value={bairroId}
+                        onChange={(e) => setBairroId(Number(e.target.value))}
+                    >
+                        <option value="">Selecione seu bairro</option>
+                        {bairros.map((b) => (
+                            <option key={b.id} value={b.id}>
+                                {b.nome}
+                            </option>
+                        ))}
+                    </select>
                     <Button
                         text="Cadastrar"
                         fullWidth
