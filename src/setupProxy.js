@@ -9,4 +9,12 @@ module.exports = function(app) {
       secure: false,
     })
   )
+  app.use(
+    '/bairros',
+    createProxyMiddleware({
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      secure: false,
+    })
+  )
 }
