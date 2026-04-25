@@ -5,6 +5,8 @@ import Navbar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 import SingUp from "./pages/singup/SingUp";
 import SignIn from "./pages/signin/SignIn";
+
+import OccurrenceList from "./components/Occurrence/OccurrenceList";
 //css
 import "./App.css";
 
@@ -19,6 +21,7 @@ function App() {
             <Route path="/" element={<div>Home</div>} />
             <Route path="/cadastro" element={<SingUp />} />
             <Route path="/login" element={<SignIn />} />
+            <Route path="/ocorrencias" element={<OccurrenceList />} />
           </Routes>
         </main>
 
