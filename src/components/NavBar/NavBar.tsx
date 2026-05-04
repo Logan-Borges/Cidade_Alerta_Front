@@ -1,9 +1,6 @@
-import { useState } from "react";
-//css
+import { useState, useEffect } from "react";
 import "./NavBar.css";
-//logo
 import { LogoCidadeAlerta } from "../../assets/logo";
-//componentes
 import Button from "../Button/Button";
 import MenuHamburguer from "./MenuHamburguer";
 
@@ -15,30 +12,47 @@ type NavItem = {
 };
 
 interface NavbarProps {
-  menu?: NavItem[];
   logoText?: string;
 }
 
 const Navbar = ({
   logoText = "Cidade Alerta",
-  menu = [
+}: NavbarProps) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
+
+  const menu: NavItem[] = [
     { label: "Home", url: "/home", type: "text" },
     { label: "Reportar", url: "/reportar", type: "text" },
     { label: "Ocorrências", url: "/ocorrencias", type: "text" },
-    { label: "Login", action: () => window.location.href = "/login", type: "button" },
-    { label: "Cadastro", action: () => window.location.href = "/cadastro", type: "button" },
-  ],
-}: NavbarProps) => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  
+    ...(isLoggedIn
+      ? [
+          { label: "Perfil", url: "/perfil", type: "text" },
+          { label: "Sair", action: handleLogout, type: "button" },
+        ]
+      : [
+          { label: "Login", action: () => (window.location.href = "/login"), type: "button" },
+          { label: "Cadastro", action: () => (window.location.href = "/cadastro"), type: "button" },
+        ]),
+  ] as NavItem[];
+
   return (
     <nav className="navbar">
-
       <div className="logo">
-        <LogoCidadeAlerta
-          size={40}
-          color="#e7eb0b"
-        />
+        <LogoCidadeAlerta size={40} color="#e7eb0b" />
         {logoText}
       </div>
       <MenuHamburguer onChange={(next) => setMenuOpen(next)} open={menuOpen} />
@@ -49,10 +63,15 @@ const Navbar = ({
               {item.type === "button" ? (
                 <Button
                   text={item.label}
-                  task={() => { if (typeof item.action === 'function') item.action(); setMenuOpen(false); }}
+                  task={() => {
+                    if (typeof item.action === "function") item.action();
+                    setMenuOpen(false);
+                  }}
                 />
               ) : (
-                <a href={item.url} onClick={() => setMenuOpen(false)}>{item.label}</a>
+                <a href={item.url} onClick={() => setMenuOpen(false)}>
+                  {item.label}
+                </a>
               )}
             </li>
           ))}

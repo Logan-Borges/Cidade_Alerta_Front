@@ -19,4 +19,5 @@ export class User {
 export interface LoginResponse {
     mensagem: string
     usuario: User
+    token: string;
 }

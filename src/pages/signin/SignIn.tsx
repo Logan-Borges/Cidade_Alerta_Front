@@ -36,12 +36,18 @@ const SignIn = () => {
 
         try {
             const usuario = await userService.login(dados)
-            console.log("Logado!", usuario)
+            
+            const token = usuario?.token || usuario
+            if (token) {
+                localStorage.setItem('token', typeof token === 'string' ? token : JSON.stringify(token))
+            }
+
             setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
 
-            setTimeout(() => navigate('/'), 2000)
+            setTimeout(() => {
+                window.location.href = '/'
+            }, 2000)
 
-            navigate('/')
         } catch (error: any) {
             setAlert({ type: 'error', title: 'Email ou senha inválidos', description: 'Verifique suas credenciais e tente novamente.' })
         } finally {
