@@ -12,6 +12,14 @@ export class UserService extends BaseService {
     }
 
     async login(dados: LoginDTO): Promise<LoginResponse> {
-        return this.post<LoginDTO, LoginResponse>("/usuarios/login", dados)
+        return this.post<LoginDTO, LoginResponse>("/auth/login", dados)
+    }
+
+    async getProfile(): Promise<User> {
+        return this.get<User>("/usuarios/perfil")
+    }
+
+    async updateProfile(user: User): Promise<User> {
+        return this.put<User, User>("/usuarios/perfil", user)
     }
 }

@@ -9,6 +9,7 @@ import SignIn from "./pages/signin/SignIn";
 import OccurrenceList from "./components/Occurrence/OccurrenceList";
 //css
 import "./App.css";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/cadastro" element={<SingUp />} />
             <Route path="/login" element={<SignIn />} />
             <Route path="/ocorrencias" element={<OccurrenceList />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
 
