@@ -35,12 +35,9 @@ const SignIn = () => {
         }
 
         try {
-            const usuario = await userService.login(dados)
-            
-            const token = usuario?.token || usuario
-            if (token) {
-                localStorage.setItem('token', typeof token === 'string' ? token : JSON.stringify(token))
-            }
+            const response = await userService.login(dados)
+
+            localStorage.setItem('token', response.token)
 
             setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
 

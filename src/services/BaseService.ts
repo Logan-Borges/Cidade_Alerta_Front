@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL ?? ""
+const API_BASE_URL = "http://localhost:8080"
 
 export class BaseService {
     private getHeaders(): HeadersInit {
@@ -42,4 +42,19 @@ export class BaseService {
 
         return response.json() as Promise<TResponse>
     }
+
+    protected async put<TBody, TResponse>(path: string, data: TBody): Promise<TResponse> {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+        method: "PUT",
+        headers: this.getHeaders(),
+        body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Erro ${response.status}: ${errorText}`)
+    }
+
+    return response.json() as Promise<TResponse>
+}
 }
