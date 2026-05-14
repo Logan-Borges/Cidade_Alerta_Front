@@ -135,6 +135,10 @@ const SingUp = () => {
             setAlert({ type: 'warning', title: 'Preencha todos os campos', description: 'Todos os campos são obrigatórios.' })
             return false
         }
+        if (!bairroId) {
+            setAlert({ type: 'warning', title: 'Selecione um bairro', description: 'O bairro é obrigatório.' })
+            return false
+        }
         if (password !== confirmPassword) {
             setAlert({ type: 'error', title: 'As senhas não coincidem', description: 'Verifique e digite novamente.' })
             return false
@@ -147,7 +151,9 @@ const SingUp = () => {
         setLoading(true)
         setAlert(null)
         try {
-            const user = new User(name, email, password, cpf, undefined, bairroId)
+            // Remove máscara do CPF antes de enviar (backend espera 11 dígitos)
+            const cpfLimpo = cpf.replace(/\D/g, "")
+            const user = new User(name, email, password, cpfLimpo, undefined, bairroId)
             await userService.createUser(user)
             setAlert({ type: 'success', title: 'Usuário cadastrado com sucesso!' })
             setTimeout(() => navigate('/login'), 2000)
@@ -163,7 +169,6 @@ const SingUp = () => {
             <LeftPanel />
 
             <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 sm:px-12 bg-white">
-                {/* Logo mobile */}
                 <div className="lg:hidden flex items-center gap-3 mb-8">
                     <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-[#ef671f] rounded-xl flex items-center justify-center">
                         <LogoCidadeAlerta size={20} color="#fff" />
@@ -194,7 +199,6 @@ const SingUp = () => {
                                 <AuthInput label="Senha" type="password" placeholder="••••••••" value={password} onChange={setPassword} />
                                 <AuthInput label="Confirmar senha" type="password" placeholder="••••••••" value={confirmPassword} onChange={setConfirmPassword} />
 
-                                {/* Select de bairro */}
                                 <div className="flex flex-col gap-1.5">
                                     <label className="text-sm font-semibold text-gray-700">Bairro</label>
                                     <select
@@ -207,7 +211,7 @@ const SingUp = () => {
                                             backgroundPosition: 'right 14px center',
                                         }}
                                     >
-                                        <option value="">Selecione seu bairro</option>
+                                        <option value={0}>Selecione seu bairro</option>
                                         {bairros.map((b) => (
                                             <option key={b.id} value={b.id}>{b.nome}</option>
                                         ))}
