@@ -1,64 +1,36 @@
-import "./Footer.css";
-import { LogoCidadeAlerta } from "../../assets/logo";
-import { IconFacebook } from "../../assets/facebook";
-import { IconInstagram } from "../../assets/instagram";
-import { IconTwitter } from "../../assets/twitter";
-import { IconLinkedin } from "../../assets/linkedin";
+import { Shield } from "lucide-react";
+
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-container">
-
-        {/* Logo + redes */}
-        <div className="footer-section">
-  <div className="logo">
-    <LogoCidadeAlerta size={40}
-     color="#e7eb0b" />
-    <span className="logo-text">Cidade Alerta</span>
-  </div>
-
-  <div className="socials">
-  <IconFacebook />
-  <IconInstagram />
-  <IconTwitter />
-  <IconLinkedin />
-</div>
-</div>
-
-        
-        <div className="footer-section">
-          <h3>LINKS ÚTEIS</h3>
-          <ul>
-            <li>Home</li>
-            <li>Serviços</li>
-            <li>Contact</li>
-            <li>Alerta</li>
-            <li>Blog</li>
-          </ul>
+    <footer
+      style={{
+        borderTop: "1px solid rgba(255,255,255,0.08)",
+        padding: "32px 0",
+        backgroundColor: "#0f1e2e",
+      }}
+    >
+      <div
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+      >
+        <div className="flex items-center gap-2">
+          <div
+            className="flex items-center justify-center"
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 6,
+              background: "linear-gradient(135deg, #3b82f6, #ef671f)",
+            }}
+          >
+            <Shield className="w-3 h-3 text-white" />
+          </div>
+          <span className="font-bold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+            Cidade<span style={{ color: "#f97316" }}>Alerta</span>
+          </span>
         </div>
-
-       
-        <div className="footer-section">
-          <h3>SUPORTE</h3>
-          <ul>
-            <li>Perguntas Frequentes</li>
-            <li>Política de Privacidade</li>
-            <li>Termos de Uso</li>
-          </ul>
-        </div>
-
-        
-        <div className="footer-section">
-          <h3>CONTATO</h3>
-          <p>Email: info@cidadealerta.br</p>
-          <p>Telefone: (00) 1234-5678</p>
-          <p>Endereço: Av. Kennedy, 2511</p>
-        </div>
-
-      </div>
-
-      <div className="footer-bottom">
-        © 2026 Cidade Alerta - Todos os direitos reservados.
+        <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+          © 2026 CidadeAlerta. Todos os direitos reservados.
+        </p>
       </div>
     </footer>
   );
