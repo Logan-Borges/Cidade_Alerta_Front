@@ -1,4 +1,4 @@
-export default function SkeletonCard() {
+export default function SkeletonOccurrence() {
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden animate-pulse">
       <div className="h-36 bg-muted" />
