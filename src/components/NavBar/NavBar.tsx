@@ -40,7 +40,7 @@ const Navbar = ({
     { label: "Ocorrências", url: "/ocorrencias", type: "text" },
     ...(isLoggedIn
       ? [
-          { label: "Perfil", url: "/perfil", type: "text" },
+          { label: "Perfil", url: "/profile", type: "text" },
           { label: "Sair", action: handleLogout, type: "button" },
         ]
       : [
