@@ -6,6 +6,7 @@ import SignIn from "./pages/signin/SignIn";
 import OccurrenceList from "./components/Occurrence/OccurrenceList";
 import Profile from "./pages/profile/Profile";
 import Home from "./pages/home/Home";
+import Reportar from "./pages/reportar/Reportar";
 import "./App.css";
 
 const AUTH_ROUTES = ["/login", "/cadastro"];
@@ -15,6 +16,7 @@ function Layout() {
   const { pathname } = useLocation();
   const isAuth = AUTH_ROUTES.includes(pathname);
   const isFull = FULL_ROUTES.includes(pathname);
+  const isReportar = pathname === "/reportar";
 
   if (isAuth) {
     return (
@@ -41,11 +43,11 @@ function Layout() {
   return (
     <div className="app-container">
       <Navbar />
-      <main className="content">
-        <Routes>
-          <Route path="/ocorrencias" element={<OccurrenceList />} />
-        </Routes>
-      </main>
+      <Routes>
+        <Route path="/reportar" element={<Reportar />} />
+        <Route path="/ocorrencias" element={<OccurrenceList />} />
+      </Routes>
+
       <Footer />
     </div>
   );
