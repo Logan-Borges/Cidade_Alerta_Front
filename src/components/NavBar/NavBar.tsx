@@ -8,30 +8,49 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInitial, setUserInitial] = useState("U");
+
   const location = useLocation();
 
+  // Detecta scroll
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
+  // Detecta login
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
 
     const nome = localStorage.getItem("nome");
-    if (nome) setUserInitial(nome[0].toUpperCase());
+
+    if (nome) {
+      setUserInitial(nome[0].toUpperCase());
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("nome");
+
     setIsLoggedIn(false);
+
     window.location.href = "/";
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  // Transparente SOMENTE na home e no topo
+  const isTransparent = location.pathname === "/" && !scrolled;
 
   const navLinks = [
     { label: "Início", path: "/" },
@@ -47,33 +66,62 @@ export default function Navbar() {
         left: 0,
         right: 0,
         zIndex: 50,
-        transition: "all 0.3s",
-        background: scrolled ? "rgba(10,20,35,0.98)" : "rgba(10,20,35,0.82)",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "none",
-        boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.3)" : "none",
+        transition: "all 0.3s ease",
+
+        // Transparente somente no topo da home
+        background: isTransparent
+          ? "transparent"
+          : "rgba(10,20,35,0.95)",
+
+        backdropFilter: isTransparent
+          ? "none"
+          : "blur(12px)",
+
+        borderBottom: isTransparent
+          ? "none"
+          : "1px solid rgba(255,255,255,0.08)",
+
+        boxShadow: isTransparent
+          ? "none"
+          : "0 4px 24px rgba(0,0,0,0.3)",
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between" style={{ height: 64 }}>
-
+        <div
+          className="flex items-center justify-between"
+          style={{ height: 64 }}
+        >
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group" style={{ textDecoration: "none" }}>
+          <Link
+            to="/"
+            className="flex items-center gap-2 group"
+            style={{ textDecoration: "none" }}
+          >
             <div
               className="flex items-center justify-center"
               style={{
                 width: 32,
                 height: 32,
                 borderRadius: 8,
-                background: "linear-gradient(135deg, #3b82f6, #ef671f)",
-                boxShadow: "0 0 12px rgba(59,130,246,0.4)",
+                background:
+                  "linear-gradient(135deg, #3b82f6, #ef671f)",
+                boxShadow:
+                  "0 0 12px rgba(59,130,246,0.4)",
                 transition: "box-shadow 0.3s",
               }}
             >
               <Shield className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-lg text-white" style={{ letterSpacing: "-0.02em" }}>
-              Cidade<span style={{ color: "#f97316" }}>Alerta</span>
+
+            {/* FONTE ORIGINAL */}
+            <span
+              className="font-bold text-lg text-white"
+              style={{ letterSpacing: "-0.02em" }}
+            >
+              Cidade
+              <span style={{ color: "#f97316" }}>
+                Alerta
+              </span>
             </span>
           </Link>
 
@@ -90,19 +138,28 @@ export default function Navbar() {
                   fontWeight: 500,
                   textDecoration: "none",
                   transition: "all 0.2s",
-                  color: isActive(link.path) ? "#fff" : "rgba(255,255,255,0.7)",
-                  background: isActive(link.path) ? "rgba(255,255,255,0.1)" : "transparent",
+
+                  color: isActive(link.path)
+                    ? "#fff"
+                    : "rgba(255,255,255,0.7)",
+
+                  background: isActive(link.path)
+                    ? "rgba(255,255,255,0.1)"
+                    : "transparent",
                 }}
-                onMouseEnter={e => {
+                onMouseEnter={(e) => {
                   if (!isActive(link.path)) {
                     e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.08)";
                   }
                 }}
-                onMouseLeave={e => {
+                onMouseLeave={(e) => {
                   if (!isActive(link.path)) {
-                    e.currentTarget.style.color = "rgba(255,255,255,0.7)";
-                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color =
+                      "rgba(255,255,255,0.7)";
+                    e.currentTarget.style.background =
+                      "transparent";
                   }
                 }}
               >
@@ -115,6 +172,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
               <>
+                {/* Bell */}
                 <Link
                   to="/ocorrencias"
                   className="flex items-center justify-center"
@@ -126,18 +184,22 @@ export default function Navbar() {
                     transition: "all 0.2s",
                     textDecoration: "none",
                   }}
-                  onMouseEnter={e => {
+                  onMouseEnter={(e) => {
                     e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.1)";
                   }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.color = "rgba(255,255,255,0.7)";
-                    e.currentTarget.style.background = "transparent";
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color =
+                      "rgba(255,255,255,0.7)";
+                    e.currentTarget.style.background =
+                      "transparent";
                   }}
                 >
                   <Bell className="w-4 h-4" />
                 </Link>
 
+                {/* Reportar */}
                 <Link
                   to="/reportar"
                   className="flex items-center gap-1"
@@ -152,13 +214,23 @@ export default function Navbar() {
                     textDecoration: "none",
                     transition: "background 0.2s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#f97316")}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#ef671f")}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "#f97316";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "#ef671f";
+                  }}
                 >
-                  <Plus className="w-4 h-4" style={{ marginRight: 4 }} />
+                  <Plus
+                    className="w-4 h-4"
+                    style={{ marginRight: 4 }}
+                  />
                   Reportar
                 </Link>
 
+                {/* Avatar */}
                 <Link
                   to="/profile"
                   className="flex items-center justify-center"
@@ -166,15 +238,22 @@ export default function Navbar() {
                     width: 32,
                     height: 32,
                     borderRadius: "50%",
-                    background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                    background:
+                      "linear-gradient(135deg, #3b82f6, #1d4ed8)",
                     color: "#fff",
                     fontSize: 13,
                     fontWeight: 600,
                     textDecoration: "none",
                     transition: "all 0.2s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 0 0 2px #60a5fa")}
-                  onMouseLeave={e => (e.currentTarget.style.boxShadow = "none")}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow =
+                      "0 0 0 2px #60a5fa";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow =
+                      "none";
+                  }}
                 >
                   {userInitial}
                 </Link>
@@ -192,17 +271,21 @@ export default function Navbar() {
                     textDecoration: "none",
                     transition: "all 0.2s",
                   }}
-                  onMouseEnter={e => {
+                  onMouseEnter={(e) => {
                     e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.1)";
                   }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.color = "rgba(255,255,255,0.8)";
-                    e.currentTarget.style.background = "transparent";
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color =
+                      "rgba(255,255,255,0.8)";
+                    e.currentTarget.style.background =
+                      "transparent";
                   }}
                 >
                   Entrar
                 </Link>
+
                 <Link
                   to="/cadastro"
                   style={{
@@ -218,8 +301,14 @@ export default function Navbar() {
                     alignItems: "center",
                     transition: "background 0.2s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#f97316")}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#ef671f")}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "#f97316";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      "#ef671f";
+                  }}
                 >
                   Começar
                 </Link>
@@ -239,7 +328,11 @@ export default function Navbar() {
               padding: 8,
             }}
           >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {menuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </button>
         </div>
       </div>
@@ -255,10 +348,18 @@ export default function Navbar() {
             style={{
               background: "rgba(15,30,46,0.95)",
               backdropFilter: "blur(12px)",
-              borderTop: "1px solid rgba(255,255,255,0.1)",
+              borderTop:
+                "1px solid rgba(255,255,255,0.1)",
             }}
           >
-            <div className="px-4 py-4" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div
+              className="px-4 py-4"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 4,
+              }}
+            >
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -272,15 +373,28 @@ export default function Navbar() {
                     fontWeight: 500,
                     textDecoration: "none",
                     transition: "all 0.2s",
-                    color: isActive(link.path) ? "#fff" : "rgba(255,255,255,0.7)",
-                    background: isActive(link.path) ? "rgba(255,255,255,0.1)" : "transparent",
+
+                    color: isActive(link.path)
+                      ? "#fff"
+                      : "rgba(255,255,255,0.7)",
+
+                    background: isActive(link.path)
+                      ? "rgba(255,255,255,0.1)"
+                      : "transparent",
                   }}
                 >
                   {link.label}
                 </Link>
               ))}
 
-              <div style={{ paddingTop: 8, marginTop: 8, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <div
+                style={{
+                  paddingTop: 8,
+                  marginTop: 8,
+                  borderTop:
+                    "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
                 {isLoggedIn ? (
                   <>
                     <Link
@@ -301,6 +415,7 @@ export default function Navbar() {
                     >
                       + Reportar Ocorrência
                     </Link>
+
                     <button
                       onClick={handleLogout}
                       style={{
