@@ -28,8 +28,12 @@ body {
 
 .content {
   flex: 1;
+  padding: 94px 30px 30px;
   display: flex;
   flex-direction: column;
   width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-body-color);
   overflow-x: hidden;
 }

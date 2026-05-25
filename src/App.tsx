@@ -27,7 +27,7 @@ function Layout() {
 
   if (isFull) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "#f8fafc" }}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
