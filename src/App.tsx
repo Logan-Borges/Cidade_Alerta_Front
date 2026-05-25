@@ -9,7 +9,7 @@ import Home from "./pages/home/Home";
 import "./App.css";
 
 const AUTH_ROUTES = ["/login", "/cadastro"];
-const FULL_ROUTES = ["/", "/profile"];
+const FULL_ROUTES = ["/", "/profile", "/ocorrencias"];
 
 function Layout() {
   const { pathname } = useLocation();
@@ -27,14 +27,15 @@ function Layout() {
 
   if (isFull) {
     return (
-      <>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/ocorrencias" element={<OccurrenceList />} />
         </Routes>
         <Footer />
-      </>
+      </div>
     );
   }
 
@@ -43,7 +44,8 @@ function Layout() {
       <Navbar />
       <main className="content">
         <Routes>
-          <Route path="/ocorrencias" element={<OccurrenceList />} />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/cadastro" element={<SingUp />} />
         </Routes>
       </main>
       <Footer />
