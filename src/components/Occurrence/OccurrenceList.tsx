@@ -31,17 +31,17 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
     const resolvedCount = data.filter((o) => o.status === "resolvido").length;
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-[#0F172A]">
 
             {/* Header */}
-            <div className="bg-[#0F172A] px-6 py-8">
+            <div className="bg-[#0F172A] px-6 pb-8 pt-[80px]">
                 <div className="w-full">
                     <div className="flex items-start justify-between mb-6">
                         <div>
                             <h1 className="text-3xl font-bold text-white mb-1">Ocorrências</h1>
                             <p className="text-white/50 text-sm">Monitoramento em tempo real da sua cidade</p>
                         </div>
-                        
+
                         <a
                             href="/reportar"
                             className="inline-flex items-center gap-2 h-11 px-5 bg-[#ef671f] hover:bg-orange-500 text-white font-semibold rounded-xl transition-all text-sm shadow-lg shadow-orange-500/30"
@@ -74,9 +74,7 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
             </div>
 
             {/* Main Content */}
-            <div className="w-full px-6 py-6">
-
-                {/* Grid */}
+            <div className="w-full px-6 py-6 bg-[#f8fafc]">
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4">
                         {Array.from({ length: 12 }).map((_, i) => (
