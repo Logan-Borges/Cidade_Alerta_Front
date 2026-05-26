@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, Clock, Eye, ArrowUpRight } from "lucide-react";
+import { MapPin, Clock, AlertTriangle, ArrowUpRight } from "lucide-react";
 
 export interface OccurrenceData {
     id?: number;
@@ -11,6 +11,8 @@ export interface OccurrenceData {
     neighborhood?: string;
     image_url?: string;
     views?: number;
+    totalUrgencia?: number;
+    curtido?: boolean;
     created_date?: string;
 }
 
@@ -113,12 +115,14 @@ function timeAgo(dateStr: string): string {
 interface OccurrenceProps {
     occurrence?: OccurrenceData;
     index?: number;
+    onToggleUrgency?: (id?: number) => void;
 }
 
-const Occurrence = ({ occurrence, index = 0 }: OccurrenceProps) => {
+const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps) => {
     const cat = CATEGORIES[occurrence?.category ?? ""] ?? CATEGORIES.outros;
     const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media;
     const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌";
+    const urgCount = occurrence?.totalUrgencia ?? 0;
 
     return (
         <motion.div
@@ -127,7 +131,10 @@ const Occurrence = ({ occurrence, index = 0 }: OccurrenceProps) => {
             transition={{ delay: index * 0.05, duration: 0.3 }}
             className="group"
         >
-            <article className="bg-card border border-border rounded-2xl overflow-hidden shadow-card card-hover cursor-pointer">
+            <article
+                onClick={() => onToggleUrgency?.(occurrence?.id)}
+                className="bg-card border border-border rounded-2xl overflow-hidden shadow-card card-hover cursor-pointer"
+            >
                 {/* Image or Gradient Header */}
                 <div className={`relative h-36 ${cat.bg} flex items-center justify-center overflow-hidden`}>
                     {occurrence?.image_url ? (
@@ -182,12 +189,10 @@ const Occurrence = ({ occurrence, index = 0 }: OccurrenceProps) => {
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
-                            {(occurrence?.views ?? 0) > 0 && (
-                                <span className="flex items-center gap-1">
-                                    <Eye className="w-3 h-3" />
-                                    {occurrence!.views}
-                                </span>
-                            )}
+                            <span className="flex items-center gap-1">
+                                <AlertTriangle className={`w-3 h-3 ${occurrence?.curtido ? 'text-orange-400' : 'text-muted-foreground'}`} />
+                                {urgCount}
+                            </span>
                             {occurrence?.created_date && (
                                 <span className="flex items-center gap-1">
                                     <Clock className="w-3 h-3" />
