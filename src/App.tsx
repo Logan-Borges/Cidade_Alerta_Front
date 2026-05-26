@@ -10,7 +10,7 @@ import Reportar from "./pages/reportar/Reportar";
 import "./App.css";
 
 const AUTH_ROUTES = ["/login", "/cadastro"];
-const FULL_ROUTES = ["/", "/profile"];
+const FULL_ROUTES = ["/", "/profile", "/ocorrencias"];
 
 function Layout() {
   const { pathname } = useLocation();
@@ -29,14 +29,15 @@ function Layout() {
 
   if (isFull) {
     return (
-      <>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "#f8fafc" }}>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/ocorrencias" element={<OccurrenceList />} />
         </Routes>
         <Footer />
-      </>
+      </div>
     );
   }
 
