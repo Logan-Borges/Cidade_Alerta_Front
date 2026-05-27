@@ -1,0 +1,88 @@
+export const CATEGORIES = {
+  assalto: {
+    label: "Assalto",
+    icon: "ShieldAlert",
+    color: "red",
+    bg: "bg-red-500/10",
+    text: "text-red-400",
+    border: "border-red-500/30",
+    dot: "bg-red-500",
+  },
+  acidente: {
+    label: "Acidente",
+    icon: "Car",
+    color: "orange",
+    bg: "bg-orange-500/10",
+    text: "text-orange-400",
+    border: "border-orange-500/30",
+    dot: "bg-orange-500",
+  },
+  alagamento: {
+    label: "Alagamento",
+    icon: "Waves",
+    color: "blue",
+    bg: "bg-blue-500/10",
+    text: "text-blue-400",
+    border: "border-blue-500/30",
+    dot: "bg-blue-500",
+  },
+  incendio: {
+    label: "Incêndio",
+    icon: "Flame",
+    color: "red",
+    bg: "bg-red-500/10",
+    text: "text-red-400",
+    border: "border-red-500/30",
+    dot: "bg-red-500",
+  },
+  vandalismo: {
+    label: "Vandalismo",
+    icon: "Hammer",
+    color: "purple",
+    bg: "bg-purple-500/10",
+    text: "text-purple-400",
+    border: "border-purple-500/30",
+    dot: "bg-purple-500",
+  },
+  buraco: {
+    label: "Buraco na Via",
+    icon: "AlertTriangle",
+    color: "yellow",
+    bg: "bg-yellow-500/10",
+    text: "text-yellow-400",
+    border: "border-yellow-500/30",
+    dot: "bg-yellow-500",
+  },
+  iluminacao: {
+    label: "Iluminação",
+    icon: "Lightbulb",
+    color: "yellow",
+    bg: "bg-yellow-500/10",
+    text: "text-yellow-400",
+    border: "border-yellow-500/30",
+    dot: "bg-yellow-500",
+  },
+  outros: {
+    label: "Outros",
+    icon: "MoreHorizontal",
+    color: "indigo",
+    bg: "bg-indigo-500/10",
+    text: "text-indigo-400",
+    border: "border-indigo-500/30",
+    dot: "bg-indigo-500",
+  },
+};
+
+export const URGENCY = {
+  baixa: { label: "Baixa", color: "text-green-400", bg: "bg-green-500/10", dot: "bg-green-500" },
+  media: { label: "Média", color: "text-yellow-400", bg: "bg-yellow-500/10", dot: "bg-yellow-500" },
+  alta: { label: "Alta", color: "text-orange-400", bg: "bg-orange-500/10", dot: "bg-orange-500" },
+  critica: { label: "Crítica", color: "text-red-400", bg: "bg-red-500/10", dot: "bg-red-500" },
+};
+
+export const STATUS = {
+  ativo: { label: "Ativo", color: "text-orange-400", bg: "bg-orange-500/10", dot: "bg-orange-500" },
+  em_analise: { label: "Em Análise", color: "text-blue-400", bg: "bg-blue-500/10", dot: "bg-blue-500" },
+  em_atendimento: { label: "Em Atendimento", color: "text-purple-400", bg: "bg-purple-500/10", dot: "bg-purple-500" },
+  resolvido: { label: "Resolvido", color: "text-green-400", bg: "bg-green-500/10", dot: "bg-green-500" },
+};
