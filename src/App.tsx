@@ -15,7 +15,8 @@ const FULL_ROUTES = ["/", "/profile", "/ocorrencias"];
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const role = localStorage.getItem("role");
-  if (role !== "ADMIN") return <Navigate to="/login" replace />;
+  // Não-admin (incluindo deslogados) vai para a Home, não para o login
+  if (role !== "ADMIN") return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 

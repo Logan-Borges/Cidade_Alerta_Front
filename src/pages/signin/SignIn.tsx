@@ -125,7 +125,8 @@ const SignIn = () => {
         try {
             const response = await userService.login({ email, senha: password })
             localStorage.setItem('token', response.token)
-            localStorage.setItem("role", response.role);
+            localStorage.setItem('role', response.role)
+            if (response.nome) localStorage.setItem('nome', response.nome)
             setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
             setTimeout(() => { window.location.href = '/' }, 2000)
         } catch {
