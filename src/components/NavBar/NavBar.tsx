@@ -172,33 +172,6 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
               <>
-                {/* Bell */}
-                <Link
-                  to="/ocorrencias"
-                  className="flex items-center justify-center"
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 8,
-                    color: "rgba(255,255,255,0.7)",
-                    transition: "all 0.2s",
-                    textDecoration: "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color =
-                      "rgba(255,255,255,0.7)";
-                    e.currentTarget.style.background =
-                      "transparent";
-                  }}
-                >
-                  <Bell className="w-4 h-4" />
-                </Link>
-
                 {/* Reportar */}
                 <Link
                   to="/reportar"
