@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { MapPin, Clock, AlertTriangle, ArrowUpRight } from "lucide-react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { MapPin, Clock, AlertTriangle } from "lucide-react";
 
 export interface OccurrenceData {
@@ -126,6 +128,8 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
     const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media;
     const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌";
     const urgCount = occurrence?.totalUrgencia ?? 0;
+
+    useDocumentTitle("Ocorrências");
 
     return (
         <motion.div

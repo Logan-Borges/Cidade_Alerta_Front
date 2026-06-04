@@ -18,13 +18,14 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Re-lê o localStorage sempre que a rota muda (cobre login/logout sem reload)
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
     setIsAdmin(localStorage.getItem("role") === "ADMIN");
     const nome = localStorage.getItem("nome");
     if (nome) setUserInitial(nome[0].toUpperCase());
-  }, []);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
