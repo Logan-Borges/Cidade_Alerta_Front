@@ -3,6 +3,7 @@ import { Shield, AlertTriangle, TrendingUp, Plus } from "lucide-react";
 import Select from "react-select";
 import Occurrence, { OccurrenceData } from "./Occurrence";
 import SkeletonOccurrence from "./SkeletonOccurrence";
+import OccurrenceMap from "./OccurrenceMap";
 import { OccurrenceService } from "../../services/OccurrenceService";
 import { UserService } from "../../services/UserService";
 import { BairroService } from "../../services/BairroService";
@@ -125,6 +126,11 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
         data: it.data ?? it.created_date ?? it.createdAt ?? undefined,
         created_date: it.data ?? it.created_date ?? it.createdAt ?? undefined,
         userId: it.usuarioId ?? it.userId ?? it.usuario?.id ?? undefined,
+        // localização (quando disponível)
+        lat: it.lat != null ? Number(it.lat) : it.latitude != null ? Number(it.latitude) : null,
+        lng: it.lng != null ? Number(it.lng) : it.longitude != null ? Number(it.longitude) : null,
+        rua: it.rua ?? it.logradouro ?? it.street ?? null,
+        bairroNome: it.bairroNome ?? it.bairro ?? (it.bairro && it.bairro.nome) ?? null,
     });
 
     const applyFilters = (items: OccurrenceData[]) =>
@@ -664,6 +670,11 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Mapa */}
+            <div className="w-full px-6 py-4">
+                <OccurrenceMap occurrences={data} />
             </div>
 
             {/* Main Content */}
