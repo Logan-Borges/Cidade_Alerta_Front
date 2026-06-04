@@ -6,6 +6,7 @@ import { CreateOccurrenceDTO, OccurrenceService } from "../../services/Occurrenc
 import { BairroService } from "../../services/BairroService"
 import { Bairro } from "../../models/Bairro"
 import { UserService } from "../../services/UserService"
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 const occurrenceService = new OccurrenceService()
 const bairroService = new BairroService()
@@ -50,6 +51,8 @@ export default function Reportar() {
     const [loading, setLoading] = useState(false)
     const [alert, setAlert] = useState<{ type: "success" | "error" | "warning" | "info"; title: string; description?: string } | null>(null)
     const navigate = useNavigate()
+
+    useDocumentTitle("Reportar Ocorrência")
 
     useEffect(() => {
         const loadBairros = async () => {

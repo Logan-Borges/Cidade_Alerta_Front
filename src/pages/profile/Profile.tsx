@@ -8,6 +8,7 @@ import {
 import { UserService } from "../../services/UserService";
 import { BairroService } from "../../services/BairroService";
 import { Bairro } from "../../models/Bairro";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 const userService = new UserService();
 const bairroService = new BairroService();
@@ -135,6 +136,8 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useDocumentTitle("Meu Perfil");
 
   useEffect(() => {
     const fetchBairros = async () => {

@@ -5,6 +5,7 @@ import {
   ArrowRight, MapPin, CheckCircle,
   ShieldAlert, Car, Waves, Flame, ChevronRight, Users, Zap, Eye
 } from "lucide-react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 const STATS = [
   { label: "Ocorrências Reportadas", value: "2.4k+", icon: ShieldAlert },
@@ -28,6 +29,8 @@ const HOW_IT_WORKS = [
 
 export default function Home() {
   const [isAuthed, setIsAuthed] = useState(false);
+
+  useDocumentTitle();
 
   useEffect(() => {
     const token = localStorage.getItem("token");

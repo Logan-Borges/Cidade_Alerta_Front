@@ -8,6 +8,7 @@ import { UserService } from "../../services/UserService"
 import { BairroService } from "../../services/BairroService"
 import { useNavigate } from "react-router-dom"
 import { LogoCidadeAlerta } from "../../assets/logo"
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 const userService = new UserService()
 const bairroService = new BairroService()
@@ -117,6 +118,8 @@ const SingUp = () => {
     const [loading, setLoading] = useState(false)
     const [alert, setAlert] = useState<AlertState>(null)
     const navigate = useNavigate()
+
+    useDocumentTitle("Criar Conta")
 
     useEffect(() => {
         const fetchBairros = async () => {
