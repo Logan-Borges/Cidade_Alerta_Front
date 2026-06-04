@@ -16,11 +16,26 @@ export class OccurrenceService extends BaseService {
         return this.post<CreateOccurrenceDTO, CreateOccurrenceDTO>("/ocorrencias", data)
     }
 
-    async getOccurrences<T = any>(): Promise<T> {
-        return this.get<T>("/ocorrencias")
+    async getOccurrences<T = any>(filters?: Record<string, string>): Promise<T> {
+        const query = new URLSearchParams()
+
+        if (filters) {
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value !== undefined && value !== null && String(value).trim() !== "") {
+                    query.append("filter", `${key}=${value}`)
+                }
+            })
+        }
+
+        const path = query.toString() ? `/ocorrencias?${query.toString()}` : "/ocorrencias"
+        return this.get<T>(path)
     }
 
     async toggleUrgencia(ocorrenciaId: number): Promise<any> {
         return this.post<{ ocorrencia: number }, any>("/urgencia", { ocorrencia: ocorrenciaId })
+    }
+
+    async getUrgencias<T = number[]>(): Promise<T> {
+        return this.get<T>("/urgencia")
     }
 }
