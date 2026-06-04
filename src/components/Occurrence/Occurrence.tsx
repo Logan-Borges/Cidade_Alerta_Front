@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { MapPin, Clock, AlertTriangle, ArrowUpRight } from "lucide-react";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { MapPin, Clock, AlertTriangle } from "lucide-react";
 
 export interface OccurrenceData {
     id?: number;
@@ -15,6 +16,9 @@ export interface OccurrenceData {
     totalUrgencia?: number;
     curtido?: boolean;
     created_date?: string;
+    userId?: number;
+    data?: string;
+    neighborhoodId?: number | string;
 }
 
 // ── Categoria ────────────────────────────────────────────────────────────────
@@ -131,7 +135,9 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
         <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05, duration: 0.3 }}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ delay: index * 0.05, duration: 0.3, type: "spring", stiffness: 280, damping: 24 }}
             className="group"
         >
             <article
@@ -167,6 +173,7 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                             <span className={`text-xs font-medium ${cat.text}`}>{cat.label}</span>
                         </div>
                     </div>
+
                 </div>
 
                 {/* Content */}
@@ -175,7 +182,10 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                         <h3 className="font-semibold text-foreground text-sm leading-snug line-clamp-2 flex-1">
                             {occurrence?.title ?? "Sem título"}
                         </h3>
-                        <ArrowUpRight className="w-4 h-4 text-muted-foreground flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-950/80 border border-white/10 text-[11px] text-white/80 backdrop-blur-sm">
+                            <AlertTriangle className="w-3 h-3 text-orange-300" />
+                            <span>{urgCount} urgências</span>
+                        </div>
                     </div>
 
                     {occurrence?.description && (
