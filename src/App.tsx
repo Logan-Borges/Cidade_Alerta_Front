@@ -1,22 +1,28 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
-import SingUp from "./pages/singup/SingUp";
+import SingUp from "./pages/signup/SignUp";
 import SignIn from "./pages/signin/SignIn";
 import OccurrenceList from "./components/Occurrence/OccurrenceList";
 import Profile from "./pages/profile/Profile";
 import Home from "./pages/home/Home";
-import Reportar from "./pages/reportar/Reportar";
+import Reportar from "./pages/report/Report";
+import Analytics from "./pages/analytics/Analytics";
 import "./App.css";
 
 const AUTH_ROUTES = ["/login", "/cadastro"];
 const FULL_ROUTES = ["/", "/profile", "/ocorrencias"];
 
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const role = localStorage.getItem("role");
+  if (role !== "ADMIN") return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 function Layout() {
   const { pathname } = useLocation();
   const isAuth = AUTH_ROUTES.includes(pathname);
   const isFull = FULL_ROUTES.includes(pathname);
-  const isReportar = pathname === "/reportar";
 
   if (isAuth) {
     return (
@@ -47,8 +53,8 @@ function Layout() {
       <Routes>
         <Route path="/reportar" element={<Reportar />} />
         <Route path="/ocorrencias" element={<OccurrenceList />} />
+        <Route path="/analytics" element={<AdminRoute><Analytics /></AdminRoute>} />
       </Routes>
-
       <Footer />
     </div>
   );
