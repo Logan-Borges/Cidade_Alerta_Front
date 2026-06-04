@@ -5,6 +5,7 @@ import Alert from "../../components/Alert/Alert"
 import { UserService, LoginDTO } from "../../services/UserService"
 import { useNavigate } from "react-router-dom"
 import { LogoCidadeAlerta } from "../../assets/logo"
+import { useDocumentTitle } from "../../hooks/useDocumentTitle"
 
 const userService = new UserService()
 
@@ -106,6 +107,8 @@ function LeftPanel() {
 }
 
 const SignIn = () => {
+    useDocumentTitle("Fazer Login")
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
@@ -122,6 +125,7 @@ const SignIn = () => {
         try {
             const response = await userService.login({ email, senha: password })
             localStorage.setItem('token', response.token)
+            localStorage.setItem("role", response.role);
             setAlert({ type: 'success', title: 'Login realizado com sucesso!' })
             setTimeout(() => { window.location.href = '/' }, 2000)
         } catch {
