@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { MapPin, Clock, AlertTriangle, ArrowUpRight } from "lucide-react";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { MapPin, Clock, AlertTriangle } from "lucide-react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export interface OccurrenceData {
     id?: number;
@@ -19,6 +18,11 @@ export interface OccurrenceData {
     userId?: number;
     data?: string;
     neighborhoodId?: number | string;
+    lat?: number | null;
+    lng?: number | null;
+    rua?: string | null;
+    cep?: string | null;
+    bairroNome?: string | null;
 }
 
 // ── Categoria ────────────────────────────────────────────────────────────────

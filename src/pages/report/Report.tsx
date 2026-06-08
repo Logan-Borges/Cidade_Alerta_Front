@@ -47,6 +47,12 @@ export default function Reportar() {
     const [bairroId, setBairroId] = useState<number | null>(null)
     const [bairros, setBairros] = useState<Bairro[]>([])
     const [bairroLoading, setBairroLoading] = useState(false)
+    const [cep, setCep] = useState<string>("")
+    const [rua, setRua] = useState<string | null>(null)
+    const [bairroNomeLocal, setBairroNomeLocal] = useState<string | null>(null)
+    const [lat, setLat] = useState<number | null>(null)
+    const [lng, setLng] = useState<number | null>(null)
+    const [cepLoading, setCepLoading] = useState(false)
     const [fotoBase64, setFotoBase64] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const [alert, setAlert] = useState<{ type: "success" | "error" | "warning" | "info"; title: string; description?: string } | null>(null)
@@ -88,6 +94,70 @@ export default function Reportar() {
         }
     }
 
+    const lookupCep = async (value: string) => {
+        const raw = String(value || "").replace(/\D/g, "")
+        if (raw.length !== 8) return
+
+        setCepLoading(true)
+        try {
+            // ViaCEP para obter rua/bairro/localidade/uf
+            const viaRes = await fetch(`https://viacep.com.br/ws/${raw}/json/`)
+            const viaData = await viaRes.json()
+            if (viaData.erro) {
+                setAlert({ type: "error", title: "CEP inválido", description: "CEP não encontrado." })
+                setRua(null)
+                setBairroNomeLocal(null)
+                setLat(null)
+                setLng(null)
+                return
+            }
+
+            setCep(raw)
+            setRua(viaData.logradouro || "")
+            setBairroNomeLocal(viaData.bairro || "")
+
+            // Geocodificar com Nominatim (OpenStreetMap)
+            const city = viaData.localidade || ""
+            const uf = viaData.uf || ""
+            const addressQuery = `${viaData.logradouro || ""} ${viaData.bairro || ""} ${city} ${uf} Brasil`.trim()
+
+            let geocode = null
+            if (addressQuery.replace(/\s+/g, "").length > 0) {
+                const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressQuery)}&limit=1`, {
+                    headers: { 'User-Agent': 'Cidade-Alerta-App' }
+                })
+                const geoJson = await geoRes.json()
+                if (Array.isArray(geoJson) && geoJson.length > 0) geocode = geoJson[0]
+            }
+
+            // fallback: tentar buscar por CEP
+            if (!geocode) {
+                const geoRes2 = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${raw}&limit=1`, {
+                    headers: { 'User-Agent': 'Cidade-Alerta-App' }
+                })
+                const geo2 = await geoRes2.json()
+                if (Array.isArray(geo2) && geo2.length > 0) geocode = geo2[0]
+            }
+
+            if (geocode) {
+                setLat(Number(geocode.lat))
+                setLng(Number(geocode.lon))
+            } else {
+                setLat(null)
+                setLng(null)
+            }
+
+        } catch (err) {
+            setAlert({ type: "error", title: "Erro ao buscar CEP", description: "Não foi possível obter informações do CEP." })
+            setRua(null)
+            setBairroNomeLocal(null)
+            setLat(null)
+            setLng(null)
+        } finally {
+            setCepLoading(false)
+        }
+    }
+
     const handleSubmit = async () => {
         if (!titulo.trim() || !descricao.trim() || !tipo || !urgencia || !bairroId) {
             setAlert({ type: "warning", title: "Preencha todos os campos obrigatórios", description: "Título, descrição, tipo, urgência e bairro são necessários." })
@@ -117,6 +187,11 @@ export default function Reportar() {
             usuarioId,
             bairroId,
             fotoBase64,
+            cep: cep || null,
+            rua: rua || null,
+            bairroNome: bairroNomeLocal || (bairros.find(b => b.id === bairroId)?.nome ?? null),
+            lat,
+            lng,
         }
 
         setLoading(true)
@@ -212,6 +287,28 @@ export default function Reportar() {
                                     </select>
                                 </div>
                             </div>
+
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-sm font-semibold text-gray-300">CEP</label>
+                                            <input
+                                                value={cep}
+                                                onChange={(e) => setCep(e.target.value)}
+                                                onBlur={() => lookupCep(cep)}
+                                                placeholder="Digite o CEP (apenas números)"
+                                                className="mt-3 w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-colors duration-150 hover:bg-slate-900/40 focus:border-[#ef671f] focus:ring-2 focus:ring-orange-400/20 appearance-none"
+                                            />
+                                        </div>
+
+                                        <div className="flex flex-col gap-1">
+                                            <label className="text-sm font-semibold text-gray-300">Endereço (retornado)</label>
+                                            <div className="mt-3 w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white text-sm">
+                                                <div>Rua: {rua ?? '—'}</div>
+                                                <div>Bairro: {bairroNomeLocal ?? '—'}</div>
+                                                <div>Lat/Lng: {lat != null && lng != null ? `${lat.toFixed(6)}, ${lng.toFixed(6)}` : '—'}</div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="flex flex-col gap-1">

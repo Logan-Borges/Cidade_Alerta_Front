@@ -9,6 +9,11 @@ export interface CreateOccurrenceDTO {
     usuarioId?: number
     bairroId: number
     fotoBase64: string | null
+    cep?: string | null
+    rua?: string | null
+    bairroNome?: string | null
+    lat?: number | null
+    lng?: number | null
 }
 
 export class OccurrenceService extends BaseService {
