@@ -20,6 +20,12 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function RequireAuth({ children }: { children: React.ReactNode }) {
+  const token = localStorage.getItem("token");
+  if (!token) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 function Layout() {
   const { pathname } = useLocation();
   const isAuth = AUTH_ROUTES.includes(pathname);
@@ -40,8 +46,8 @@ function Layout() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/ocorrencias" element={<OccurrenceList />} />
+          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+          <Route path="/ocorrencias" element={<RequireAuth><OccurrenceList /></RequireAuth>} />
         </Routes>
         <Footer />
       </div>
@@ -52,8 +58,8 @@ function Layout() {
     <div className="app-container">
       <Navbar />
       <Routes>
-        <Route path="/reportar" element={<Reportar />} />
-        <Route path="/ocorrencias" element={<OccurrenceList />} />
+        <Route path="/reportar" element={<RequireAuth><Reportar /></RequireAuth>} />
+        <Route path="/ocorrencias" element={<RequireAuth><OccurrenceList /></RequireAuth>} />
         <Route path="/analytics" element={<AdminRoute><Analytics /></AdminRoute>} />
       </Routes>
       <Footer />

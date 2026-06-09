@@ -5,6 +5,8 @@ export class User {
     cpf?: string
     senha: string
     bairroId?: number
+    role?: string
+    roles?: string[]
 
     constructor(nome: string, email: string, senha: string, cpf?: string, id?: number, bairroId?: number) {
         this.nome = nome
