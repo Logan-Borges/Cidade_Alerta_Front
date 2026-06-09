@@ -171,7 +171,7 @@ export default function Analytics() {
 
   // ── Loading ────────────────────────────────────────────────────────
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#07101f", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 14 }}>
+    <div style={{ minHeight: "100vh", paddingTop: 72, background: "#07101f", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 14 }}>
       <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: .9, ease: "linear" }}
         style={{ width: 34, height: 34, borderRadius: "50%", border: "3px solid rgba(255,255,255,.1)", borderTopColor: "#ef671f" }} />
       <span style={{ color: "rgba(255,255,255,.3)", fontSize: 13 }}>Carregando analytics…</span>
@@ -180,7 +180,7 @@ export default function Analytics() {
 
   // ── Erro ───────────────────────────────────────────────────────────
   if (error || !dash) return (
-    <div style={{ minHeight: "100vh", background: "#07101f", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
+    <div style={{ minHeight: "100vh", paddingTop: 72, background: "#07101f", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8 }}>
       <AlertTriangle size={32} color="#ef4444" />
       <span style={{ color: "rgba(255,255,255,.5)", fontSize: 14 }}>{error ?? "Sem dados"}</span>
     </div>
@@ -197,7 +197,7 @@ export default function Analytics() {
   }));
 
   return (
-    <div style={{ minHeight: "100vh", background: "#07101f", color: "#fff" }}>
+    <div style={{ minHeight: "100vh", paddingTop: 72, background: "#07101f", color: "#fff" }}>
       {/* Header */}
       <div style={{ background: "linear-gradient(180deg,#0a1828,#0f1e2e)", borderBottom: "1px solid rgba(255,255,255,.07)", padding: "30px 0 26px" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12 }}>
@@ -206,10 +206,7 @@ export default function Analytics() {
             <h1 style={{ fontSize: 26, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.02em" }}>Analytics</h1>
             <p style={{ fontSize: 13, color: "rgba(255,255,255,.35)", marginTop: 3 }}>Estatísticas e padrões de ocorrências da sua cidade</p>
           </div>
-          <motion.a href="/reportar" whileHover={{ scale: 1.02 }} whileTap={{ scale: .97 }}
-            style={{ display: "inline-flex", alignItems: "center", gap: 7, height: 38, padding: "0 18px", background: "linear-gradient(135deg,#ef671f,#f97316)", color: "#fff", fontWeight: 700, fontSize: 13, borderRadius: 11, textDecoration: "none", boxShadow: "0 4px 18px rgba(239,103,31,.35)" }}>
-            <Plus size={14} />Reportar
-          </motion.a>
+          {/* Reportar button removed as requested */}
         </div>
       </div>
 

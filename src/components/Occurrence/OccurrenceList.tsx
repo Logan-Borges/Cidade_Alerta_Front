@@ -594,7 +594,8 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
                                             border: "1px solid rgba(255, 255, 255, 0.2)",
                                             borderRadius: "12px",
                                             marginTop: "8px",
-                                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.5)"
+                                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.5)",
+                                            zIndex: 50
                                         }),
                                         menuList: (base) => ({
                                             ...base,
@@ -665,7 +666,8 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
                                             border: "1px solid rgba(255, 255, 255, 0.2)",
                                             borderRadius: "12px",
                                             marginTop: "8px",
-                                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.5)"
+                                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.5)",
+                                            zIndex: 50
                                         }),
                                         menuList: (base) => ({
                                             ...base,
@@ -706,7 +708,7 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
             </div>
 
             {/* Mapa */}
-            <div className="w-full px-6 py-4">
+            <div className="w-full px-6 py-4 relative z-0">
                 <OccurrenceMap occurrences={data} focusedOccurrence={focusedOccurrence} mapFocusKey={mapFocusKey} />
             </div>
 

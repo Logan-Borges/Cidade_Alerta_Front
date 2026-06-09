@@ -190,7 +190,6 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                     {/* My Occurrence badge */}
                     {isMyOccurrence && occurrence && (
                         <div className="absolute top-3 right-3">
-                            <Option />
                             <Option occurrence={occurrence} onDeleted={onDeleted} />
                         </div>
                     )}
