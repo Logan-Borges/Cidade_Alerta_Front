@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { MapPin, Clock, AlertTriangle } from "lucide-react";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import Option from "../Option/option";
 
 export interface OccurrenceData {
     id?: number;
@@ -132,7 +133,7 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
     const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media;
     const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌";
     const urgCount = occurrence?.totalUrgencia ?? 0;
-
+    const myOccurrence = true;
     useDocumentTitle("Ocorrências");
 
     return (
@@ -162,13 +163,13 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                         </div>
                     )}
 
-                    {/* Urgency pip */}
-                    <div className="absolute top-3 right-3">
-                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${urg.dot} animate-pulse`} />
-                            <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
+                        {/* Urgency pip */}
+                        <div className={`absolute top-3 ${myOccurrence ? 'right-12' : 'right-3'}`}>
+                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${urg.dot} animate-pulse`} />
+                                <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
+                            </div>
                         </div>
-                    </div>
 
                     {/* Category badge */}
                     <div className="absolute top-3 left-3">
@@ -177,6 +178,18 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                             <span className={`text-xs font-medium ${cat.text}`}>{cat.label}</span>
                         </div>
                     </div>
+                    
+                    {/* My Occurrence badge */}
+                    {myOccurrence && (
+                        <div className="absolute top-3 right-3">
+                            {/* My Occurrence badge 
+                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 border border-white/10 backdrop-blur-sm`}>
+                                <span className={`text-xs font-medium`}>...</span>
+                            </div>
+                            */}
+                            <Option></Option>
+                        </div>
+                    )}
 
                 </div>
 
