@@ -58,6 +58,8 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
     const [isFetchingProfile, setIsFetchingProfile] = useState<boolean>(false);
     const [bairroMap, setBairroMap] = useState<Record<number | string, string>>({});
     const [likedUrgencias, setLikedUrgencias] = useState<number[]>([]);
+    const [focusedOccurrenceId, setFocusedOccurrenceId] = useState<number | null>(null);
+    const [mapFocusKey, setMapFocusKey] = useState(0);
 
     const occurrenceService = new OccurrenceService();
     const userService = new UserService();
@@ -130,6 +132,7 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
         lat: it.lat != null ? Number(it.lat) : it.latitude != null ? Number(it.latitude) : null,
         lng: it.lng != null ? Number(it.lng) : it.longitude != null ? Number(it.longitude) : null,
         rua: it.rua ?? it.logradouro ?? it.street ?? null,
+        cep: it.cep ?? null,
         bairroNome: it.bairroNome ?? it.bairro ?? (it.bairro && it.bairro.nome) ?? null,
     });
 
@@ -419,6 +422,27 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
         setShowMine(false);
     };
 
+    const focusedOccurrence = useMemo(
+        () => data.find((item) => item.id === focusedOccurrenceId) ?? null,
+        [data, focusedOccurrenceId]
+    );
+
+    const handleSelectOccurrence = (occurrence: OccurrenceData) => {
+        if (occurrence.id != null) {
+            setFocusedOccurrenceId(occurrence.id);
+            setMapFocusKey((key) => key + 1);
+        }
+    };
+
+    const handleDeleteOccurrence = (id: number) => {
+        const updatedAll = allData.filter((item) => item.id !== id);
+        setAllData(updatedAll);
+        setData(applySorting(applyFilters(updatedAll)));
+        if (focusedOccurrenceId === id) {
+            setFocusedOccurrenceId(null);
+        }
+    };
+
     const resultCount = data.length;
     const selectedFiltersCount = [
         selectedUrgency,
@@ -683,7 +707,7 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
 
             {/* Mapa */}
             <div className="w-full px-6 py-4">
-                <OccurrenceMap occurrences={data} />
+                <OccurrenceMap occurrences={data} focusedOccurrence={focusedOccurrence} mapFocusKey={mapFocusKey} />
             </div>
 
             {/* Main Content */}
@@ -704,6 +728,15 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4 max-h-[calc(100vh-18rem)] overflow-y-auto">
                         {data.map((occurrence, index) => (
                             <Occurrence key={occurrence.id ?? index} occurrence={occurrence} index={index} onToggleUrgency={handleToggleUrgency} onStatusChange={handleStatusChange} />
+                            <Occurrence 
+                                key={occurrence.id ?? index} 
+                                occurrence={occurrence} 
+                                index={index}
+                                onSelect={handleSelectOccurrence}
+                                onToggleUrgency={handleToggleUrgency}
+                                onDeleted={handleDeleteOccurrence}
+                                isMyOccurrence={occurrence.userId === profile?.id}
+                            />
                         ))}
                     </div>
                 )}

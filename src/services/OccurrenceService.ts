@@ -21,6 +21,14 @@ export class OccurrenceService extends BaseService {
         return this.post<CreateOccurrenceDTO, CreateOccurrenceDTO>("/ocorrencias", data)
     }
 
+    async updateOccurrence(id: number, data: CreateOccurrenceDTO): Promise<CreateOccurrenceDTO> {
+        return this.put<CreateOccurrenceDTO, CreateOccurrenceDTO>(`/ocorrencias/${id}`, data)
+    }
+
+    async deleteOccurrence(id: number): Promise<void> {
+        return this.delete(`/ocorrencias/${id}`)
+    }
+
     async getOccurrences<T = any>(filters?: Record<string, string>): Promise<T> {
         const query = new URLSearchParams()
 
