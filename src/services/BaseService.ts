@@ -5,12 +5,12 @@ export class BaseService {
         const headers: Record<string, string> = {
             "Content-Type": "application/json",
         }
-        
+
         const token = localStorage.getItem('token')
         if (token) {
             headers["Authorization"] = `Bearer ${token}`
         }
-        
+
         return headers
     }
 
@@ -44,17 +44,33 @@ export class BaseService {
     }
 
     protected async put<TBody, TResponse>(path: string, data: TBody): Promise<TResponse> {
-    const response = await fetch(`${API_BASE_URL}${path}`, {
-        method: "PUT",
-        headers: this.getHeaders(),
-        body: JSON.stringify(data),
-    })
+        const response = await fetch(`${API_BASE_URL}${path}`, {
+            method: "PUT",
+            headers: this.getHeaders(),
+            body: JSON.stringify(data),
+        })
 
-    if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Erro ${response.status}: ${errorText}`)
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Erro ${response.status}: ${errorText}`)
+        }
+
+        return response.json() as Promise<TResponse>
     }
 
-    return response.json() as Promise<TResponse>
-}
+    // ── T46: PATCH para atualizações parciais ─────────────────────────────────
+    protected async patch<TBody, TResponse>(path: string, data: TBody): Promise<TResponse> {
+        const response = await fetch(`${API_BASE_URL}${path}`, {
+            method: "PATCH",
+            headers: this.getHeaders(),
+            body: JSON.stringify(data),
+        })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Erro ${response.status}: ${errorText}`)
+        }
+
+        return response.json() as Promise<TResponse>
+    }
 }

@@ -43,4 +43,12 @@ export class OccurrenceService extends BaseService {
     async getUrgencias<T = number[]>(): Promise<T> {
         return this.get<T>("/urgencia")
     }
+
+    // ── T46: Atualizar status (ADM) ───────────────────────────────────────────
+    async updateStatus(id: number, status: string): Promise<CreateOccurrenceDTO> {
+        return this.patch<{ status: string }, CreateOccurrenceDTO>(
+            `/ocorrencias/${id}/status`,
+            { status }
+        )
+    }
 }

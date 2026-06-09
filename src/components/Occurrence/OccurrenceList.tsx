@@ -397,6 +397,15 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
         }
     };
 
+    // ── T46: atualiza status localmente após mudança pelo ADM ────────────────
+    const handleStatusChange = (id: number, newStatus: string) => {
+        const updatedAll = allData.map((item) =>
+            item.id === id ? { ...item, status: newStatus } : item
+        );
+        setAllData(updatedAll);
+        setData(applySorting(applyFilters(updatedAll)));
+    };
+
     const handleFilterPill = (value: string, setter: React.Dispatch<React.SetStateAction<string>>) => {
         setter((current) => (current === value ? "" : value));
     };
@@ -694,7 +703,7 @@ const OccurrenceList = ({ occurrences, loading = false }: OccurrenceListProps) =
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4 max-h-[calc(100vh-18rem)] overflow-y-auto">
                         {data.map((occurrence, index) => (
-                            <Occurrence key={occurrence.id ?? index} occurrence={occurrence} index={index} onToggleUrgency={handleToggleUrgency} />
+                            <Occurrence key={occurrence.id ?? index} occurrence={occurrence} index={index} onToggleUrgency={handleToggleUrgency} onStatusChange={handleStatusChange} />
                         ))}
                     </div>
                 )}
