@@ -2,15 +2,18 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, Menu, X, Bell, Plus } from "lucide-react";
+import { UserService } from "../../services/UserService";
 
 export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false);
   const [menuOpen, setMenuOpen]     = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin]       = useState(false);
-  const [userInitial, setUserInitial] = useState("U");
+  const [userName, setUserName] = useState("");
 
   const location = useLocation();
+
+  const userService = new UserService();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -24,8 +27,35 @@ export default function Navbar() {
     setIsLoggedIn(!!token);
     setIsAdmin(localStorage.getItem("role") === "ADMIN");
     const nome = localStorage.getItem("nome");
-    if (nome) setUserInitial(nome[0].toUpperCase());
+    setUserName(nome ?? "");
   }, [location.pathname]);
+
+  // If logged in but nome is not in localStorage, try to fetch profile from backend
+  useEffect(() => {
+    let mounted = true;
+    const fetchName = async () => {
+      if (!isLoggedIn) return;
+      if (userName) return; // already have
+      try {
+        const profile = await userService.getProfile();
+        if (mounted && profile?.nome) {
+          setUserName(profile.nome);
+          try { localStorage.setItem("nome", profile.nome); } catch {}
+        }
+      } catch {
+        // ignore
+      }
+    };
+    fetchName();
+    return () => { mounted = false; };
+  }, [isLoggedIn, userName]);
+
+  const userInitial = userName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("") || "U";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -256,6 +286,43 @@ export default function Navbar() {
               <div style={{ paddingTop: 8, marginTop: 8, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                 {isLoggedIn ? (
                   <>
+                    <Link
+                      to="/profile"
+                      onClick={() => setMenuOpen(false)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "12px 16px",
+                        borderRadius: 14,
+                        background: "rgba(255,255,255,0.05)",
+                        textDecoration: "none",
+                        color: "#fff",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 38,
+                          height: 38,
+                          borderRadius: "50%",
+                          background: "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: "#fff",
+                        }}
+                      >
+                        {userInitial}
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <span style={{ fontSize: 14, fontWeight: 600 }}>Meu perfil</span>
+                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.65)" }}>
+                          {userName || "Usuário"}
+                        </span>
+                      </div>
+                    </Link>
                     <Link
                       to="/reportar"
                       onClick={() => setMenuOpen(false)}

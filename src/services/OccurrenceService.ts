@@ -6,6 +6,7 @@ export interface CreateOccurrenceDTO {
     tipo: string | null
     urgencia: string | null
     status: string | null
+    ativo?: boolean
     usuarioId?: number
     bairroId: number
     fotoBase64: string | null

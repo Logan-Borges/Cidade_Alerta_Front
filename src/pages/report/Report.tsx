@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { OccurrenceData } from "../../components/Occurrence/Occurrence"
 import { ArrowLeft, Camera, Sparkles, Shield, MapPin, AlertTriangle, Zap } from "lucide-react"
@@ -60,9 +60,13 @@ export default function Reportar() {
     const [lng, setLng] = useState<number | null>(null)
     const [cepLoading, setCepLoading] = useState(false)
     const [fotoBase64, setFotoBase64] = useState<string | null>(null)
+    const [cepMatchedBairroId, setCepMatchedBairroId] = useState<number | null>(null)
+    const [cepMatchedBairroName, setCepMatchedBairroName] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const [alert, setAlert] = useState<{ type: "success" | "error" | "warning" | "info"; title: string; description?: string } | null>(null)
     const navigate = useNavigate()
+
+    const bairroSelectRef = useRef<HTMLSelectElement | null>(null)
 
     useDocumentTitle(isEditing ? "Editar Ocorrência" : "Reportar Ocorrência")
 
@@ -142,6 +146,29 @@ export default function Reportar() {
             setRua(viaData.logradouro || "")
             setBairroNomeLocal(viaData.bairro || "")
 
+            // tentar selecionar automaticamente o bairro se já estiver carregado
+            const viaBairro = (viaData.bairro || "").trim()
+                if (viaBairro && bairros.length > 0) {
+                const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+                const target = normalize(viaBairro)
+                const match = bairros.find(b => {
+                    const bn = normalize(b.nome || "")
+                    return bn === target || bn.includes(target) || target.includes(bn)
+                })
+                if (match) {
+                        setBairroId(match.id)
+                        setCepMatchedBairroId(match.id)
+                        setCepMatchedBairroName(match.nome ?? null)
+                        setTimeout(() => {
+                            bairroSelectRef.current?.focus()
+                            bairroSelectRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }, 120)
+                    } else {
+                        setCepMatchedBairroId(null)
+                        setCepMatchedBairroName(null)
+                    }
+            }
+
             // Geocodificar com Nominatim (OpenStreetMap)
             const city = viaData.localidade || ""
             const uf = viaData.uf || ""
@@ -179,10 +206,37 @@ export default function Reportar() {
             setBairroNomeLocal(null)
             setLat(null)
             setLng(null)
+            setCepMatchedBairroId(null)
+            setCepMatchedBairroName(null)
         } finally {
             setCepLoading(false)
         }
     }
+
+    // caso os bairros carreguem depois do lookup, tente mapear novamente
+    useEffect(() => {
+        if (!bairroNomeLocal) return
+        if (!bairros || bairros.length === 0) return
+
+        const viaBairro = bairroNomeLocal.trim()
+        if (!viaBairro) return
+
+        const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        const target = normalize(viaBairro)
+        const match = bairros.find(b => {
+            const bn = normalize(b.nome || "")
+            return bn === target || bn.includes(target) || target.includes(bn)
+        })
+        if (match) {
+            setBairroId(match.id)
+            setCepMatchedBairroId(match.id)
+            setCepMatchedBairroName(match.nome ?? null)
+            setTimeout(() => {
+                bairroSelectRef.current?.focus()
+                bairroSelectRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }, 120)
+        }
+    }, [bairroNomeLocal, bairros])
 
     const handleSubmit = async () => {
         if (!titulo.trim() || !descricao.trim() || !tipo || !urgencia || !bairroId) {
@@ -209,7 +263,8 @@ export default function Reportar() {
             descricao: descricao.trim(),
             tipo,
             urgencia,
-            status: isEditing ? (editOccurrence?.status ?? null) : null,
+            status: isEditing ? (editOccurrence?.status ?? "ativa") : "ativa",
+            ativo: true,
             usuarioId,
             bairroId,
             fotoBase64,
@@ -326,7 +381,14 @@ export default function Reportar() {
                                             <label className="text-sm font-semibold text-gray-300">CEP</label>
                                             <input
                                                 value={cep}
-                                                onChange={(e) => setCep(e.target.value)}
+                                                onChange={(e) => {
+                                                    setCep(e.target.value)
+                                                    const raw = String(e.target.value || "").replace(/\D/g, "")
+                                                    if (raw.length < 8) {
+                                                        setCepMatchedBairroId(null)
+                                                        setCepMatchedBairroName(null)
+                                                    }
+                                                }}
                                                 onBlur={() => lookupCep(cep)}
                                                 placeholder="Digite o CEP (apenas números)"
                                                 className="mt-3 w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white outline-none transition-colors duration-150 hover:bg-slate-900/40 focus:border-[#ef671f] focus:ring-2 focus:ring-orange-400/20 appearance-none"
@@ -346,26 +408,10 @@ export default function Reportar() {
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="flex flex-col gap-1">
                                     <label className="text-sm font-semibold text-gray-300">Bairro</label>
-                                    <select
-                                        value={bairroId ?? ""}
-                                        onChange={(e) => setBairroId(Number(e.target.value))}
-                                        disabled={bairroLoading || bairros.length === 0}
-                                        className="w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 pr-10 text-white outline-none transition-colors duration-150 hover:bg-slate-900/40 focus:border-[#ef671f] focus:ring-2 focus:ring-orange-400/20 disabled:cursor-not-allowed disabled:opacity-70 appearance-none cursor-pointer"
-                                        style={{
-                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundPosition: 'right 14px center',
-                                        }}
-                                    >
-                                        <option value="" disabled>
-                                            {bairroLoading ? "Carregando bairros..." : "Selecione o bairro"}
-                                        </option>
-                                        {bairros.map((bairro) => (
-                                            <option key={bairro.id} value={bairro.id}>
-                                                {bairro.nome}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <div className="mt-3 w-full rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-white text-sm">
+                                        {cepMatchedBairroName ?? bairroNomeLocal ?? 'Informe o CEP para preencher o bairro'}
+                                    </div>
+                                    <input type="hidden" value={bairroId ?? ''} />
                                 </div>
                             </div>
 
