@@ -6,6 +6,8 @@ import { OccurrenceData } from "./Occurrence";
 
 interface Props {
     occurrences: OccurrenceData[];
+    focusedOccurrence?: OccurrenceData | null;
+    mapFocusKey?: number;
 }
 
 const urgencyColor = (urg?: string) => {
@@ -38,7 +40,22 @@ function FitBounds({ points }: { points: [number, number][] }) {
     return null;
 }
 
-const OccurrenceMap: React.FC<Props> = ({ occurrences }) => {
+function FlyTo({ lat, lng, focusKey }: { lat: number; lng: number; focusKey?: number }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (!map) return;
+        try {
+            map.flyTo([lat, lng], 16, { duration: 0.8 });
+        } catch (e) {
+            // ignore
+        }
+    }, [map, lat, lng, focusKey]);
+
+    return null;
+}
+
+const OccurrenceMap: React.FC<Props> = ({ occurrences, focusedOccurrence, mapFocusKey }) => {
     const points = occurrences
         .map((o) => (o.lat != null && o.lng != null ? [o.lat as number, o.lng as number] as [number, number] : null))
         .filter(Boolean) as [number, number][];
@@ -53,7 +70,15 @@ const OccurrenceMap: React.FC<Props> = ({ occurrences }) => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {points.length > 0 && <FitBounds points={points} />}
+                {points.length > 0 && !focusedOccurrence && <FitBounds points={points} />}
+
+                {focusedOccurrence?.lat != null && focusedOccurrence?.lng != null && (
+                    <FlyTo
+                        lat={focusedOccurrence.lat}
+                        lng={focusedOccurrence.lng}
+                        focusKey={mapFocusKey}
+                    />
+                )}
 
                 {occurrences.map((occ) =>
                     occ.lat != null && occ.lng != null ? (

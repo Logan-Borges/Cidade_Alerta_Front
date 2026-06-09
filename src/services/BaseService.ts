@@ -57,4 +57,16 @@ export class BaseService {
 
     return response.json() as Promise<TResponse>
 }
+
+    protected async delete(path: string): Promise<void> {
+        const response = await fetch(`${API_BASE_URL}${path}`, {
+            method: "DELETE",
+            headers: this.getHeaders(),
+        })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`Erro ${response.status}: ${errorText}`)
+        }
+    }
 }

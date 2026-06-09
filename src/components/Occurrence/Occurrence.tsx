@@ -125,15 +125,17 @@ function timeAgo(dateStr: string): string {
 interface OccurrenceProps {
     occurrence?: OccurrenceData;
     index?: number;
+    onSelect?: (occurrence: OccurrenceData) => void;
     onToggleUrgency?: (id?: number) => void;
+    onDeleted?: (id: number) => void;
+    isMyOccurrence?: boolean;
 }
 
-const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps) => {
+const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDeleted, isMyOccurrence = false }: OccurrenceProps) => {
     const cat = CATEGORIES[occurrence?.category ?? ""] ?? CATEGORIES.outros;
     const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media;
     const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌";
     const urgCount = occurrence?.totalUrgencia ?? 0;
-    const myOccurrence = true;
     useDocumentTitle("Ocorrências");
 
     return (
@@ -146,7 +148,7 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
             className="group"
         >
             <article
-                onClick={() => onToggleUrgency?.(occurrence?.id)}
+                onClick={() => occurrence && onSelect?.(occurrence)}
                 className="bg-card border border-border rounded-2xl overflow-hidden shadow-card card-hover cursor-pointer"
             >
                 {/* Image or Gradient Header */}
@@ -164,7 +166,7 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                     )}
 
                         {/* Urgency pip */}
-                        <div className={`absolute top-3 ${myOccurrence ? 'right-12' : 'right-3'}`}>
+                        <div className={`absolute top-3 ${isMyOccurrence ? 'right-12' : 'right-3'}`}>
                             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
                                 <span className={`w-1.5 h-1.5 rounded-full ${urg.dot} animate-pulse`} />
                                 <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
@@ -180,14 +182,9 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                     </div>
                     
                     {/* My Occurrence badge */}
-                    {myOccurrence && (
+                    {isMyOccurrence && occurrence && (
                         <div className="absolute top-3 right-3">
-                            {/* My Occurrence badge 
-                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 border border-white/10 backdrop-blur-sm`}>
-                                <span className={`text-xs font-medium`}>...</span>
-                            </div>
-                            */}
-                            <Option></Option>
+                            <Option occurrence={occurrence} onDeleted={onDeleted} />
                         </div>
                     )}
 
@@ -199,10 +196,17 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                         <h3 className="font-semibold text-foreground text-sm leading-snug line-clamp-2 flex-1">
                             {occurrence?.title ?? "Sem título"}
                         </h3>
-                        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-950/80 border border-white/10 text-[11px] text-white/80 backdrop-blur-sm">
-                            <AlertTriangle className="w-3 h-3 text-orange-300" />
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggleUrgency?.(occurrence?.id);
+                            }}
+                            className="flex items-center gap-1 px-3 py-1 rounded-full bg-slate-950/80 border border-white/10 text-[11px] text-white/80 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-slate-900"
+                        >
+                            <AlertTriangle className={`w-3 h-3 ${occurrence?.curtido ? 'text-orange-500' : 'text-orange-300'}`} />
                             <span>{urgCount} urgências</span>
-                        </div>
+                        </button>
                     </div>
 
                     {occurrence?.description && (
@@ -219,10 +223,6 @@ const Occurrence = ({ occurrence, index = 0, onToggleUrgency }: OccurrenceProps)
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <span className="flex items-center gap-1">
-                                <AlertTriangle className={`w-3 h-3 ${occurrence?.curtido ? 'text-orange-400' : 'text-muted-foreground'}`} />
-                                {urgCount}
-                            </span>
                             {occurrence?.created_date && (
                                 <span className="flex items-center gap-1">
                                     <Clock className="w-3 h-3" />
