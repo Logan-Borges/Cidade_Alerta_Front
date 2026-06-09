@@ -1,6 +1,6 @@
 export default function SkeletonOccurrence() {
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden animate-pulse">
+    <div className="bg-card bg-gray-100 border border-border rounded-2xl overflow-hidden animate-pulse">
       <div className="h-36 bg-muted" />
       <div className="p-4 space-y-3">
         <div className="h-4 bg-muted rounded-lg w-3/4" />
