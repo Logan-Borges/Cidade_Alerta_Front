@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { OccurrenceData } from "../../components/Occurrence/Occurrence"
 import { ArrowLeft, Camera, Sparkles, Shield, MapPin, AlertTriangle, Zap } from "lucide-react"
 import Alert from "../../components/Alert/Alert"
 import { CreateOccurrenceDTO, OccurrenceService } from "../../services/OccurrenceService"
@@ -40,6 +41,11 @@ function readFileAsBase64(file: File): Promise<string> {
 }
 
 export default function Reportar() {
+    const location = useLocation()
+    const editOccurrence = (location.state as { editOccurrence?: OccurrenceData } | null)?.editOccurrence
+    const editingId = editOccurrence?.id
+    const isEditing = Boolean(editingId)
+
     const [titulo, setTitulo] = useState("")
     const [descricao, setDescricao] = useState("")
     const [tipo, setTipo] = useState<string | null>(null)
@@ -58,7 +64,7 @@ export default function Reportar() {
     const [alert, setAlert] = useState<{ type: "success" | "error" | "warning" | "info"; title: string; description?: string } | null>(null)
     const navigate = useNavigate()
 
-    useDocumentTitle("Reportar Ocorrência")
+    useDocumentTitle(isEditing ? "Editar Ocorrência" : "Reportar Ocorrência")
 
     useEffect(() => {
         const loadBairros = async () => {
@@ -66,7 +72,7 @@ export default function Reportar() {
             try {
                 const data = await bairroService.getBairros()
                 setBairros(data)
-                if (data.length > 0) {
+                if (!isEditing && data.length > 0) {
                     setBairroId(data[0].id ?? null)
                 }
             } catch {
@@ -77,7 +83,27 @@ export default function Reportar() {
         }
 
         loadBairros()
-    }, [])
+    }, [isEditing])
+
+    useEffect(() => {
+        if (!editOccurrence) return
+
+        setTitulo(editOccurrence.title ?? "")
+        setDescricao(editOccurrence.description ?? "")
+        setTipo(editOccurrence.category ?? null)
+        setUrgencia(editOccurrence.urgency ?? null)
+        if (editOccurrence.neighborhoodId != null) {
+            setBairroId(Number(editOccurrence.neighborhoodId))
+        }
+        setCep(editOccurrence.cep ?? "")
+        setRua(editOccurrence.rua ?? null)
+        setBairroNomeLocal(editOccurrence.bairroNome ?? null)
+        setLat(editOccurrence.lat ?? null)
+        setLng(editOccurrence.lng ?? null)
+        if (editOccurrence.image_url) {
+            setFotoBase64(editOccurrence.image_url)
+        }
+    }, [editOccurrence])
 
     const handleFotoChange = async (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
@@ -183,7 +209,7 @@ export default function Reportar() {
             descricao: descricao.trim(),
             tipo,
             urgencia,
-            status: null,
+            status: isEditing ? (editOccurrence?.status ?? null) : null,
             usuarioId,
             bairroId,
             fotoBase64,
@@ -198,12 +224,17 @@ export default function Reportar() {
         setAlert(null)
 
         try {
-            await occurrenceService.createOccurrence(payload)
-            setAlert({ type: "success", title: "Ocorrência enviada!", description: "Sua denúncia foi registrada e está sendo processada." })
+            if (isEditing && editingId) {
+                await occurrenceService.updateOccurrence(editingId, payload)
+                setAlert({ type: "success", title: "Ocorrência atualizada!", description: "As alterações foram salvas com sucesso." })
+            } else {
+                await occurrenceService.createOccurrence(payload)
+                setAlert({ type: "success", title: "Ocorrência enviada!", description: "Sua denúncia foi registrada e está sendo processada." })
+            }
             setTimeout(() => navigate("/ocorrencias"), 1600)
         } catch (error: any) {
-            const message = error?.message || "Ocorreu um erro ao enviar a ocorrência."
-            setAlert({ type: "error", title: "Erro ao reportar", description: message })
+            const message = error?.message || (isEditing ? "Ocorreu um erro ao atualizar a ocorrência." : "Ocorreu um erro ao enviar a ocorrência.")
+            setAlert({ type: "error", title: isEditing ? "Erro ao editar" : "Erro ao reportar", description: message })
         } finally {
             setLoading(false)
         }
@@ -217,7 +248,9 @@ export default function Reportar() {
                     <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/20 backdrop-blur-xl">
                         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h2 className="text-3xl font-bold text-white">Reportar ocorrência</h2>
+                                <h2 className="text-3xl font-bold text-white">
+                                    {isEditing ? "Editar ocorrência" : "Reportar ocorrência"}
+                                </h2>
                             </div>
                             <Link
                                 to="/ocorrencias"
@@ -360,7 +393,7 @@ export default function Reportar() {
                                     disabled={loading}
                                     className="text-white inline-flex items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-[#ef671f] to-[#fbbf24] px-6 py-4 text-sm font-bold shadow-lg shadow-orange-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
-                                    {loading ? "Enviando..." : "Reportar agora"}
+                                    {loading ? "Enviando..." : isEditing ? "Salvar alterações" : "Reportar agora"}
                                     <Zap className="w-4 h-4 text-white" />
                                 </button>
                             </div>
