@@ -1,29 +1,33 @@
-import { motion } from "framer-motion";
-import { MapPin, Clock, AlertTriangle } from "lucide-react";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
-import Option from "../Option/option";
+// src/components/Occurrence/Occurrence.tsx
+
+import { motion } from "framer-motion"
+import { MapPin, Clock, AlertTriangle } from "lucide-react"
+import { useDocumentTitle } from "../../hooks/useDocumentTitle"
+import Option from "../Option/option"
+import { StatusBadge } from "./StatusBadge"
+import { StatusSelector } from "./StatusSelector"
 
 export interface OccurrenceData {
-    id?: number;
-    title?: string;
-    description?: string;
-    category?: string;
-    urgency?: "baixa" | "media" | "alta" | "critica";
-    status?: string;
-    neighborhood?: string;
-    image_url?: string;
-    views?: number;
-    totalUrgencia?: number;
-    curtido?: boolean;
-    created_date?: string;
-    userId?: number;
-    data?: string;
-    neighborhoodId?: number | string;
-    lat?: number | null;
-    lng?: number | null;
-    rua?: string | null;
-    cep?: string | null;
-    bairroNome?: string | null;
+    id?: number
+    title?: string
+    description?: string
+    category?: string
+    urgency?: "baixa" | "media" | "alta" | "critica"
+    status?: string
+    neighborhood?: string
+    image_url?: string
+    views?: number
+    totalUrgencia?: number
+    curtido?: boolean
+    created_date?: string
+    userId?: number
+    data?: string
+    neighborhoodId?: number | string
+    lat?: number | null
+    lng?: number | null
+    rua?: string | null
+    cep?: string | null
+    bairroNome?: string | null
 }
 
 // ── Categoria ────────────────────────────────────────────────────────────────
@@ -65,7 +69,7 @@ const CATEGORIES: Record<string, { label: string; bg: string; border: string; te
         border: "border-gray-500/30",
         text: "text-gray-400",
     },
-};
+}
 
 // ── Urgência ─────────────────────────────────────────────────────────────────
 
@@ -94,7 +98,7 @@ const URGENCY: Record<string, { label: string; bg: string; dot: string; color: s
         dot: "bg-red-400",
         color: "text-red-300",
     },
-};
+}
 
 // ── Ícone de categoria ────────────────────────────────────────────────────────
 
@@ -105,24 +109,42 @@ const CATEGORY_ICONS: Record<string, string> = {
     transito: "🚦",
     meio_ambiente: "🌿",
     outros: "📌",
-};
+}
 
 // ── Helper de tempo relativo ──────────────────────────────────────────────────
 
 function timeAgo(dateStr: string): string {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "agora";
-    if (mins < 60) return `há ${mins}min`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `há ${hrs}h`;
-    const days = Math.floor(hrs / 24);
-    return `há ${days}d`;
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 1) return "agora"
+    if (mins < 60) return `há ${mins}min`
+    const hrs = Math.floor(mins / 60)
+    if (hrs < 24) return `há ${hrs}h`
+    const days = Math.floor(hrs / 24)
+    return `há ${days}d`
 }
 
 // ── Componente ────────────────────────────────────────────────────────────────
 
 interface OccurrenceProps {
+    occurrence?: OccurrenceData
+    index?: number
+    onToggleUrgency?: (id?: number) => void
+    onStatusChange?: (id: number, newStatus: string) => void
+}
+
+const Occurrence = ({ occurrence, index = 0, onToggleUrgency, onStatusChange }: OccurrenceProps) => {
+    const cat = CATEGORIES[occurrence?.category ?? ""] ?? CATEGORIES.outros
+    const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media
+    const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌"
+    const urgCount = occurrence?.totalUrgencia ?? 0
+    const myOccurrence = true
+
+    // ── T46: detecta se é ADM ─────────────────────────────────────────────────
+    const isAdmin = localStorage.getItem("role") === "ADMIN"
+
+    useDocumentTitle("Ocorrências")
+
     occurrence?: OccurrenceData;
     index?: number;
     onSelect?: (occurrence: OccurrenceData) => void;
@@ -165,6 +187,11 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                         </div>
                     )}
 
+                    {/* Urgency pip */}
+                    <div className={`absolute top-3 ${myOccurrence ? "right-12" : "right-3"}`}>
+                        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${urg.dot} animate-pulse`} />
+                            <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
                         {/* Urgency pip */}
                         <div className={`absolute top-3 ${isMyOccurrence ? 'right-12' : 'right-3'}`}>
                             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
@@ -172,6 +199,7 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                                 <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
                             </div>
                         </div>
+                    </div>
 
                     {/* Category badge */}
                     <div className="absolute top-3 left-3">
@@ -180,14 +208,14 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                             <span className={`text-xs font-medium ${cat.text}`}>{cat.label}</span>
                         </div>
                     </div>
-                    
+
                     {/* My Occurrence badge */}
                     {isMyOccurrence && occurrence && (
                         <div className="absolute top-3 right-3">
+                            <Option />
                             <Option occurrence={occurrence} onDeleted={onDeleted} />
                         </div>
                     )}
-
                 </div>
 
                 {/* Content */}
@@ -215,6 +243,19 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                         </p>
                     )}
 
+                    {/* ── T46: status — selector para ADM, badge para usuário comum ── */}
+                    <div className="mb-3">
+                        {isAdmin && occurrence?.id ? (
+                            <StatusSelector
+                                occurrenceId={occurrence.id}
+                                currentStatus={occurrence.status}
+                                onUpdated={(newStatus) => onStatusChange?.(occurrence.id!, newStatus)}
+                            />
+                        ) : (
+                            <StatusBadge status={occurrence?.status} />
+                        )}
+                    </div>
+
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                             <MapPin className="w-3 h-3" />
@@ -223,6 +264,10 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                             </span>
                         </div>
                         <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1">
+                                <AlertTriangle className={`w-3 h-3 ${occurrence?.curtido ? "text-orange-400" : "text-muted-foreground"}`} />
+                                {urgCount}
+                            </span>
                             {occurrence?.created_date && (
                                 <span className="flex items-center gap-1">
                                     <Clock className="w-3 h-3" />
@@ -234,7 +279,7 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                 </div>
             </article>
         </motion.div>
-    );
-};
+    )
+}
 
-export default Occurrence;
+export default Occurrence
