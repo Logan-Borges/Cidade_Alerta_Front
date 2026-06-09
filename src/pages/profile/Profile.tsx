@@ -135,6 +135,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [role, setRole] = useState("cidadão");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useDocumentTitle("Meu Perfil");
@@ -154,7 +155,22 @@ const Profile = () => {
         setEmail(usuario.email);
         setCpf(usuario.cpf ?? "");
         setBairroId(usuario.bairroId ?? 0);
-      } catch {}
+
+        const backendRole = usuario.role ??
+          (Array.isArray((usuario as any).roles) ? (usuario as any).roles[0] : undefined) ??
+          localStorage.getItem("role");
+
+        setRole(
+          backendRole
+            ? String(backendRole).replace(/^ROLE_/, "").toLowerCase()
+            : "cidadão"
+        );
+      } catch {
+        const storedRole = localStorage.getItem("role");
+        if (storedRole) {
+          setRole(String(storedRole).replace(/^ROLE_/, "").toLowerCase());
+        }
+      }
     };
 
     fetchBairros();
@@ -245,7 +261,9 @@ const Profile = () => {
               <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, margin: "4px 0 0" }}>{email}</p>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
                 <Shield style={{ width: 14, height: 14, color: "#60a5fa" }} />
-                <span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 500 }}>cidadão</span>
+                <span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 500 }}>
+                  {role === "admin" ? "Administrador" : role === "user" ? "Cidadão" : role}
+                </span>
               </div>
             </div>
           </motion.div>

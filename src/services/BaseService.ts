@@ -73,7 +73,6 @@ export class BaseService {
 
         return response.json() as Promise<TResponse>
     }
-}
 
     protected async delete(path: string): Promise<void> {
         const response = await fetch(`${API_BASE_URL}${path}`, {

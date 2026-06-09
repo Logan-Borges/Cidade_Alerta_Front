@@ -129,36 +129,20 @@ function timeAgo(dateStr: string): string {
 interface OccurrenceProps {
     occurrence?: OccurrenceData
     index?: number
+    onSelect?: (occurrence: OccurrenceData) => void
     onToggleUrgency?: (id?: number) => void
+    onDeleted?: (id: number) => void
     onStatusChange?: (id: number, newStatus: string) => void
+    isMyOccurrence?: boolean
 }
 
-const Occurrence = ({ occurrence, index = 0, onToggleUrgency, onStatusChange }: OccurrenceProps) => {
+const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDeleted, onStatusChange, isMyOccurrence = false }: OccurrenceProps) => {
     const cat = CATEGORIES[occurrence?.category ?? ""] ?? CATEGORIES.outros
     const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media
     const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌"
     const urgCount = occurrence?.totalUrgencia ?? 0
-    const myOccurrence = true
-
-    // ── T46: detecta se é ADM ─────────────────────────────────────────────────
     const isAdmin = localStorage.getItem("role") === "ADMIN"
-
     useDocumentTitle("Ocorrências")
-
-    occurrence?: OccurrenceData;
-    index?: number;
-    onSelect?: (occurrence: OccurrenceData) => void;
-    onToggleUrgency?: (id?: number) => void;
-    onDeleted?: (id: number) => void;
-    isMyOccurrence?: boolean;
-}
-
-const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDeleted, isMyOccurrence = false }: OccurrenceProps) => {
-    const cat = CATEGORIES[occurrence?.category ?? ""] ?? CATEGORIES.outros;
-    const urg = URGENCY[occurrence?.urgency ?? ""] ?? URGENCY.media;
-    const icon = CATEGORY_ICONS[occurrence?.category ?? ""] ?? "📌";
-    const urgCount = occurrence?.totalUrgencia ?? 0;
-    useDocumentTitle("Ocorrências");
 
     return (
         <motion.div
@@ -188,16 +172,10 @@ const Occurrence = ({ occurrence, index = 0, onSelect, onToggleUrgency, onDelete
                     )}
 
                     {/* Urgency pip */}
-                    <div className={`absolute top-3 ${myOccurrence ? "right-12" : "right-3"}`}>
+                    <div className={`absolute top-3 ${isMyOccurrence ? "right-12" : "right-3"}`}>
                         <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${urg.dot} animate-pulse`} />
                             <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
-                        {/* Urgency pip */}
-                        <div className={`absolute top-3 ${isMyOccurrence ? 'right-12' : 'right-3'}`}>
-                            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full ${urg.bg} border border-white/10 backdrop-blur-sm`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${urg.dot} animate-pulse`} />
-                                <span className={`text-xs font-medium ${urg.color}`}>{urg.label}</span>
-                            </div>
                         </div>
                     </div>
 
